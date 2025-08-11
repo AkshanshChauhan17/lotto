@@ -53,7 +53,7 @@
 
 .game {
   padding: 40px;
-
+  background-color: $gray-color;
   .game-navigation {
     display: flex;
     justify-content: space-between;
@@ -145,28 +145,96 @@
   display: flex;
   padding: 40px;
   padding-top: 0px;
-  .left-top {
-    .head {
-      margin-bottom: 10px;
-      @extend .f-smt-b;
-      display: flex;
-      justify-content: space-between;
+  background-color: $gray-color;
+  .left {
+    display: grid;
+    gap: 30px;
+
+    .left-top {
+      .head {
+        margin-bottom: 10px;
+        @extend .f-smt-b;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .left-matrix {
+        display: grid;
+        grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+        gap: 10px;
+        padding: 20px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.10);
+        border-radius: $card-radius;
+
+        .matrix-selector {
+          padding: 5px;
+          aspect-ratio: 1;
+          @extend .f-ll;
+          border-radius: 10px;
+          outline: 0px;
+          border: 0px;
+          box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+      }
     }
-    .left-matrix {
-      display: grid;
-      grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
-      gap:10px;
-      padding:20px;
-      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.10);
-      border-radius: $card-radius;
-      .matrix-selector {
-        padding: 5px;
-        aspect-ratio: 1;
-        @extend .f-ll;
-        border-radius: 10px;
-        outline: 0px;
-        border: 0px;
-        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+    .left-bottom {
+      .head {
+        margin-bottom: 10px;
+        @extend .f-smt-b;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .controller {
+        background-color: $text-white;
+        padding: 20px;
+        display: grid;
+        gap: 10px;
+        border-radius: $card-radius;
+
+        .left-controllers-row-one {
+          display: grid;
+          grid-template-columns: auto auto auto auto auto;
+          gap: 10px;
+
+          .left-controller {
+            padding: 5px;
+            @extend .f-ll;
+            border-radius: 10px;
+            outline: 0px;
+            border: 0px;
+            background-color: $bg-color;
+            color: $text-white;
+          }
+          .left-controller:nth-child(1) {
+            border: 1px solid $bg-color;
+            background-color: $text-white;
+            color: $bg-color;
+          }
+        }
+
+        .left-controllers-row-two {
+          display: grid;
+          grid-template-columns: auto auto auto;
+          gap: 10px;
+          .left-controller {
+            padding: 5px;
+            @extend .f-ll;
+            border-radius: 10px;
+            outline: 0px;
+            border: 0px;
+          }
+          .left-controller:nth-child(2) {
+            border: 1px solid $bg-color;
+            background-color: $text-white;
+            color: $bg-color;
+          }
+          .left-controller:nth-child(1) {
+            background-color: $bg-color;
+            color: $text-white;
+          }
+        }
       }
     }
   }

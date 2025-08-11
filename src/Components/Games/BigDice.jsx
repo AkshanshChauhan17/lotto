@@ -22,24 +22,50 @@ export default function BigDice() {
         }
     };
 
-
     return <div className="big-dice">
-        <div className="left-top">
-            <div className="head">
-                <div className="smt">Choose any number</div>
-                <div className="smt">{selectedNumbers.length}/10</div>
+        <div className="left">
+            <div className="left-top">
+                <div className="head">
+                    <div className="smt">Choose any number</div>
+                    <div className="smt">{selectedNumbers.length}/10</div>
+                </div>
+                <div className="left-matrix">
+                    {
+                        range(game_matrix[0].big_dice.clickable_numbers[0], game_matrix[0].big_dice.clickable_numbers[1]).map((e, i) => {
+                            return <button className="matrix-selector" style={{ backgroundColor: selectedNumbers.find((v) => { return v === e }) && "#1CA5FB", color: selectedNumbers.find((v) => { return v === e }) && "white" }} key={i} onClick={() => handleSelect(e)}>{e}</button>
+                        })
+                    }
+                    {
+                        range(game_matrix[0].big_dice.disabled_numbers[0], game_matrix[0].big_dice.disabled_numbers[1]).map((e, i) => {
+                            return <button className="matrix-selector" key={i} disabled>{e}</button>
+                        })
+                    }
+                </div>
             </div>
-            <div className="left-matrix">
-                {
-                    range(game_matrix[0].big_dice.clickable_numbers[0], game_matrix[0].big_dice.clickable_numbers[1]).map((e, i) => {
-                        return <button className="matrix-selector" style={{backgroundColor: selectedNumbers.find((v)=>{return v===e}) && "#1CA5FB", color: selectedNumbers.find((v)=>{return v===e}) && "white"}} key={i} onClick={() => handleSelect(e)}>{e}</button>
-                    })
-                }
-                {
-                    range(game_matrix[0].big_dice.disabled_numbers[0], game_matrix[0].big_dice.disabled_numbers[1]).map((e, i) => {
-                        return <button className="matrix-selector" key={i} disabled>{e}</button>
-                    })
-                }
+            <div className="left-bottom">
+                <div className="head">
+                    <div className="smt">Choose bet type</div>
+                </div>
+                <div className="controller">
+                    <div className="left-controllers-row-one">
+                        {
+                            game_matrix[0].big_dice.controllers.row_one.map((e, i) => {
+                                return <button key={i} className="left-controller" disabled={e.disabled}>
+                                    {e.name}
+                                </button>
+                            })
+                        }
+                    </div>
+                    <div className="left-controllers-row-two">
+                        {
+                            game_matrix[0].big_dice.controllers.row_two.map((e, i) => {
+                                return <button key={i} className="left-controller" disabled={e.disabled}>
+                                    {e.name}
+                                </button>
+                            })
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
