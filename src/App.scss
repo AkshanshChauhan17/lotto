@@ -1,0 +1,173 @@
+@use 'var' as *;
+
+.main {}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.solid-black-bg {
+  background-color: #2F3034;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  padding: 15px 40px;
+
+  .links {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+
+    .link {
+      color: white;
+      text-decoration: none;
+      @extend .f-l;
+    }
+  }
+
+  .right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .total-balance {
+      @extend .f-xl;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border-radius: 50px;
+      padding: 8px;
+    }
+  }
+}
+
+.game {
+  padding: 40px;
+
+  .game-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .left {
+      min-width: 150px;
+
+      .game-type {
+        @extend .f-sm-blue;
+      }
+
+      .game-name {
+        @extend .f-xxl;
+      }
+    }
+
+    .links {
+      display: flex;
+      gap: 40px;
+      padding: 10px 10px;
+      border-radius: 20px;
+      align-items: center;
+      @extend .bg-shade-one;
+
+      .link {
+        @extend .game-links;
+      }
+
+      .link:first-child {
+        margin-left: 30px;
+      }
+
+      .link:last-child {
+        margin-right: 30px;
+      }
+
+      .selected-link {
+        padding: 10px 20px;
+        background-color: $gray-color;
+        border-radius: 10px;
+        @extend .f-lt;
+        min-width: 60px;
+        text-align: center;
+      }
+    }
+
+    .right {
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      flex-direction: column;
+      gap: 10px;
+
+      .title {
+        @extend .f-smt;
+      }
+
+      .time-ar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        .time-hr,
+        .time-mi,
+        .time-se {
+          padding: 20px;
+          background-color: $bg-color;
+          padding: 10px;
+          display: flex;
+          color: $text-white;
+          @extend .f-l;
+          display: flex;
+          align-items: end;
+          width: 30px;
+          justify-content: center;
+          border-radius: 10px;
+
+          .text {
+            @extend .f-xsm;
+          }
+        }
+      }
+    }
+  }
+}
+
+.big-dice {
+  display: flex;
+  padding: 40px;
+  padding-top: 0px;
+  .left-top {
+    .head {
+      margin-bottom: 10px;
+      @extend .f-smt-b;
+      display: flex;
+      justify-content: space-between;
+    }
+    .left-matrix {
+      display: grid;
+      grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+      gap:10px;
+      padding:20px;
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.10);
+      border-radius: $card-radius;
+      .matrix-selector {
+        padding: 5px;
+        aspect-ratio: 1;
+        @extend .f-ll;
+        border-radius: 10px;
+        outline: 0px;
+        border: 0px;
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}

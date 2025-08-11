@@ -1,0 +1,74 @@
+$primary-color: #1CA5FB;
+$bg-color: #2F3034;
+$text-white: white;
+$gray-color: #6E6E6E;
+
+$card-radius: 20px;
+
+.selected-game {
+  font-weight: 500px;
+}
+
+.game-links {
+  @extend .f-l-r;
+  font-weight: 400;
+  text-decoration: none;
+  color: $text-white;
+  background-color: transparent;
+}
+
+.bg-shade-one {
+    box-shadow: inset 0px 10px 10px black;
+    background-color: $bg-color;
+}
+
+.f-xl {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.f-lt {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.f-xxl {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.f-l {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.f-ll {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.f-l-r {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.f-xsm {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.f-smt {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.f-smt-b {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.f-sm-blue {
+  font-size: 14px;
+  font-weight: 600;
+  color: $primary-color;
+}
