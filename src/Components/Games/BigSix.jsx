@@ -7,8 +7,9 @@ function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => i + start);
 }
 
-export default function BigDice({bets, setBets}) {
+export default function BigSix({bets, setBets}) {
     const [selectedNumbers, setSelectedNumbers] = useState([]);
+
     const [showPricePopup, setShowPricePopup] = useState(false);
     const [tempBetData, setTempBetData] = useState(null);
     const [price, setPrice] = useState(1);
@@ -131,7 +132,7 @@ export default function BigDice({bets, setBets}) {
                         <div className="smt">{selectedNumbers.length}/10</div>
                     </div>
                     <div className="left-matrix">
-                        {range(game_matrix[0].big_dice.clickable_numbers[0], game_matrix[0].big_dice.clickable_numbers[1]).map((e, i) => (
+                        {range(game_matrix[1].big_six.clickable_numbers[0], game_matrix[1].big_six.clickable_numbers[1]).map((e, i) => (
                             <button
                                 className="matrix-selector"
                                 style={{
@@ -144,7 +145,7 @@ export default function BigDice({bets, setBets}) {
                                 {e}
                             </button>
                         ))}
-                        {range(game_matrix[0].big_dice.disabled_numbers[0], game_matrix[0].big_dice.disabled_numbers[1]).map((e, i) => (
+                        {range(game_matrix[1].big_six.disabled_numbers[0], game_matrix[1].big_six.disabled_numbers[1]).map((e, i) => (
                             <button className="matrix-selector" key={i} disabled>{e}</button>
                         ))}
                     </div>
@@ -156,19 +157,19 @@ export default function BigDice({bets, setBets}) {
                     </div>
                     <div className="controller">
                         <div className="left-controllers-row-one">
-                            {game_matrix[0].big_dice.controllers.row_one.map((e, i) => (
+                            {game_matrix[1].big_six.controllers.row_one.map((e, i) => (
                                 <button
                                     key={i}
                                     className="left-controller"
                                     disabled={e.disabled}
-                                    onClick={() => handleBetTypeClick("Big Dice", e.name)}
+                                    onClick={() => handleBetTypeClick("Big Six", e.name)}
                                 >
                                     {e.name}
                                 </button>
                             ))}
                         </div>
                         <div className="left-controllers-row-two">
-                            {game_matrix[0].big_dice.controllers.row_two.map((e, i) => {
+                            {game_matrix[1].big_six.controllers.row_two.map((e, i) => {
                                 if(e.name === "CANCEL") {
                                     return <button
                                     key={i}
@@ -184,7 +185,7 @@ export default function BigDice({bets, setBets}) {
                                     key={i}
                                     className="left-controller"
                                     disabled={e.disabled}
-                                    onClick={() => handleBetTypeClick("Big Dice", e.name)}
+                                    onClick={() => handleBetTypeClick("Big Six", e.name)}
                                 >
                                     {e.name}
                                 </button>

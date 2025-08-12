@@ -3,6 +3,7 @@ const game_matrix = [
         big_dice: {
             clickable_numbers: [1, 39],
             disabled_numbers: [40, 50],
+            bg_img: "/game_assets/big-dice.svg",
             controllers: {
                 row_one: [
                     {
@@ -39,7 +40,8 @@ const game_matrix = [
     {
         big_six: {
             clickable_numbers: [1, 49],
-            disabled_numbers: [50],
+            disabled_numbers: [50, 50],
+            bg_img: "./game_assets/big-six.svg",
             controllers: {
                 row_one: [
                     {
@@ -77,6 +79,7 @@ const game_matrix = [
         big_max: {
             clickable_numbers: [1, 50],
             disabled_numbers: [],
+            bg_img: "./game_assets/big-dice.svg",
             controllers: {
                 row_one: [
                     {
@@ -113,7 +116,8 @@ const game_matrix = [
     {
         big_five: {
             clickable_numbers: [1, 49],
-            disabled_numbers: [50],
+            disabled_numbers: [50, 50],
+            bg_img: "./game_assets/big-dice.svg",
             controllers: {
                 row_one: [
                     {

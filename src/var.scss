@@ -1,9 +1,14 @@
 $primary-color: #1CA5FB;
 $bg-color: #2F3034;
+$line-color: #e0e0e0;
 $text-white: white;
 $gray-color: #efefef;
 
+$bg-red: #E20303;
+$bg-green: #29C50E;
+
 $card-radius: 20px;
+$button-radius: 10px;
 
 .selected-game {
   font-weight: 500px;
@@ -43,7 +48,7 @@ $card-radius: 20px;
 }
 
 .f-ll {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -71,4 +76,39 @@ $card-radius: 20px;
   font-size: 14px;
   font-weight: 600;
   color: $primary-color;
+}
+
+.f-date {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.f-tkt {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.f-g-name {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.f-type {
+   font-size: 22px;
+  font-weight: 700;
+}
+
+.f-type-two {
+   font-size: 16px;
+  font-weight: 500;
+}
+
+.f-amount {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.f-amount-two {
+  font-size: 18px;
+  font-weight: 500;
 }

@@ -54,6 +54,9 @@
 .game {
   padding: 40px;
   background-color: $gray-color;
+  background-position: center;
+  background-size: 300px;
+
   .game-navigation {
     display: flex;
     justify-content: space-between;
@@ -141,11 +144,11 @@
   }
 }
 
-.big-dice {
+.game-inner {
   display: flex;
-  padding: 40px;
-  padding-top: 0px;
-  background-color: $gray-color;
+  padding-top: 40px;
+  gap: 40px;
+
   .left {
     display: grid;
     gap: 30px;
@@ -162,12 +165,13 @@
         display: grid;
         grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
         gap: 10px;
-        padding: 20px;
+        padding: 30px;
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.10);
         border-radius: $card-radius;
+        background-color: $text-white;
 
         .matrix-selector {
-          padding: 5px;
+          padding: 10px;
           aspect-ratio: 1;
           @extend .f-ll;
           border-radius: 10px;
@@ -207,6 +211,7 @@
             background-color: $bg-color;
             color: $text-white;
           }
+
           .left-controller:nth-child(1) {
             border: 1px solid $bg-color;
             background-color: $text-white;
@@ -218,23 +223,162 @@
           display: grid;
           grid-template-columns: auto auto auto;
           gap: 10px;
+
           .left-controller {
             padding: 5px;
             @extend .f-ll;
             border-radius: 10px;
             outline: 0px;
             border: 0px;
+            cursor: pointer;
           }
+
+          .left-controller:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
           .left-controller:nth-child(2) {
             border: 1px solid $bg-color;
             background-color: $text-white;
             color: $bg-color;
           }
+
           .left-controller:nth-child(1) {
             background-color: $bg-color;
             color: $text-white;
           }
         }
+      }
+    }
+  }
+
+  .right {
+    flex: 1;
+    .head {
+      margin-bottom: 10px;
+      @extend .f-smt-b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .selected-cart {
+      padding: 30px;
+      background-color: $text-white;
+      border-radius: $card-radius;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: scroll;
+      box-shadow: inset -10px -40px 40px rgba(0, 0, 0, 0.2);
+      height: 400px;
+      .empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100%;
+        gap: 20px;
+        @extend .f-xl;
+        opacity: 0.6;
+        .empty-icon {
+          font-size: 100px;
+          opacity: 0.2;
+        }
+      }
+      .bet {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid $line-color;
+
+        .bet-left {
+          .top {
+            @extend .f-date;
+          }
+
+          .bottom {
+            @extend .f-tkt;
+          }
+        }
+
+        .bet-middle {
+          .top {
+            @extend .f-g-name;
+          }
+
+          .bottom {
+            display: flex;
+            align-items: baseline;
+
+            .b-left {
+              @extend .f-type;
+            }
+
+            .b-right {
+              @extend .f-type-two
+            }
+          }
+        }
+
+        .bet-right {
+          display: flex;
+          align-items: baseline;
+
+          .left {
+            @extend .f-amount;
+          }
+
+          .right {
+            @extend .f-amount-two;
+          }
+        }
+
+        .delete {
+          padding: 10px;
+          background-color: $bg-red;
+          border: 0px;
+          outline: 0px;
+          color: $text-white;
+          border-radius: $button-radius;
+          @extend .f-l;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      .bet:last-child {
+        border-bottom: 0px solid $line-color;
+      }
+    }
+
+    .selected-controls {
+      margin-top: 20px;
+      border-radius: $card-radius;
+      display: flex;
+      gap: 20px;
+
+      .clear {
+        padding: 10px 20px;
+        @extend .f-ll;
+        border: 1px solid $bg-red;
+        color: $bg-red;
+        outline: 0px;
+        border-radius: $button-radius;
+        width: 100%;
+      }
+
+      .submit {
+        padding: 10px 20px;
+        width: 100%;
+        @extend .f-ll;
+        background-color: $bg-green;
+        color: $text-white;
+        border: 0px;
+        outline: 0px;
+        border-radius: $button-radius;
       }
     }
   }

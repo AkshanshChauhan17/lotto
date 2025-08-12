@@ -6,7 +6,7 @@ const money = 44;
 
 export default function Navigation() {
     return <div className="nav solid-black-bg">
-        <div className="left-logo">Logo</div>
+        <div className="left-logo">LOTTO Games 888</div>
         <div className="links">
             {
                 main_navigation.map((e, i)=>{
