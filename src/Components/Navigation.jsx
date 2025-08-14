@@ -2,9 +2,7 @@ import { Link } from "react-router-dom";
 import { main_navigation } from "../data/navs";
 import { AiOutlineUser } from "react-icons/ai";
 
-const money = 44;
-
-export default function Navigation() {
+export default function Navigation({cud}) {
     return <div className="nav solid-black-bg">
         <div className="left-logo">LOTTO Games 888</div>
         <div className="links">
@@ -15,7 +13,7 @@ export default function Navigation() {
             }
         </div>
         <div className="right">
-            <div className="total-balance">${money}</div>
+            <div className="total-balance">${cud?.balance}</div>
             <div className="user-profile">
                 <AiOutlineUser className="user-icon" color="black"/>
             </div>

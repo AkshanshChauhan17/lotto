@@ -383,3 +383,83 @@
     }
   }
 }
+
+.register {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+  width: calc(100vw - 80px);
+  height: calc(100vh - 80px);
+  background-color: $gray-color;
+  align-items: center;
+  justify-content: center;
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    background-color: $text-white;
+    padding: 40px;
+    border-radius: $card-radius;
+    width: 300px;
+    height: fit-content;
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    button, input {
+      padding: 10px;
+      border-radius: $button-radius;
+      border: 0px;
+      outline: 0px;
+      background-color: $gray-color;
+    }
+    button {
+      background-color: $bg-green;
+      color: $text-white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}
+
+.login {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+  width: calc(100vw - 80px);
+  height: calc(100vh - 80px);
+  background-color: $gray-color;
+  align-items: center;
+  justify-content: center;
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    background-color: $text-white;
+    padding: 40px;
+    border-radius: $card-radius;
+    width: 300px;
+    height: fit-content;
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    button, input {
+      padding: 10px;
+      border-radius: $button-radius;
+      border: 0px;
+      outline: 0px;
+      background-color: $gray-color;
+    }
+    button {
+      background-color: $bg-green;
+      color: $text-white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}
