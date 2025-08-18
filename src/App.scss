@@ -1,6 +1,8 @@
 @use 'var' as *;
 
-.main {}
+body {
+  background-color: $gray-color;
+}
 
 .flex-center {
   display: flex;
@@ -56,6 +58,7 @@
   background-color: $gray-color;
   background-position: center;
   background-size: 300px;
+  min-height: calc(100vh - 180px);
 
   .game-navigation {
     display: flex;
@@ -255,6 +258,15 @@
 
   .right {
     flex: 1;
+
+    .discount {
+      background-color: $yellow;
+      border: 2px solid black;
+      padding: 8px;
+      text-align: center;
+      @extend .f-smt;
+    }
+
     .head {
       margin-bottom: 10px;
       @extend .f-smt-b;
@@ -272,6 +284,7 @@
       overflow-y: scroll;
       box-shadow: inset -10px -40px 40px rgba(0, 0, 0, 0.2);
       height: 400px;
+
       .empty {
         display: flex;
         align-items: center;
@@ -281,11 +294,13 @@
         gap: 20px;
         @extend .f-xl;
         opacity: 0.6;
+
         .empty-icon {
           font-size: 100px;
           opacity: 0.2;
         }
       }
+
       .bet {
         display: flex;
         justify-content: space-between;
@@ -388,12 +403,13 @@
   padding: 40px;
   display: flex;
   flex-direction: column;
-  gap:20px;
+  gap: 20px;
   width: calc(100vw - 80px);
   height: calc(100vh - 80px);
   background-color: $gray-color;
   align-items: center;
   justify-content: center;
+
   form {
     display: flex;
     flex-direction: column;
@@ -403,18 +419,22 @@
     border-radius: $card-radius;
     width: 300px;
     height: fit-content;
+
     label {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
-    button, input {
+
+    button,
+    input {
       padding: 10px;
       border-radius: $button-radius;
       border: 0px;
       outline: 0px;
       background-color: $gray-color;
     }
+
     button {
       background-color: $bg-green;
       color: $text-white;
@@ -428,12 +448,13 @@
   padding: 40px;
   display: flex;
   flex-direction: column;
-  gap:20px;
+  gap: 20px;
   width: calc(100vw - 80px);
   height: calc(100vh - 80px);
   background-color: $gray-color;
   align-items: center;
   justify-content: center;
+
   form {
     display: flex;
     flex-direction: column;
@@ -443,18 +464,22 @@
     border-radius: $card-radius;
     width: 300px;
     height: fit-content;
+
     label {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
-    button, input {
+
+    button,
+    input {
       padding: 10px;
       border-radius: $button-radius;
       border: 0px;
       outline: 0px;
       background-color: $gray-color;
     }
+
     button {
       background-color: $bg-green;
       color: $text-white;
@@ -462,4 +487,320 @@
       cursor: pointer;
     }
   }
+}
+
+.price-popup-overlay {
+  width: 100vw;
+  height: 100vh;
+  background-color: $bg-color;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .price-popup {
+    background-color: $text-white;
+    display: flex;
+    padding: 40px;
+    border-radius: $card-radius;
+    gap: 40px;
+
+    .left {
+      max-width: 300px;
+      border-right: 1px solid gray;
+      padding-right: 40px;
+      display: flex;
+      flex-direction: column;
+
+      .title {
+        @extend .f-xl;
+      }
+
+      .numbers {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+
+        .number {
+          padding: 10px 16px;
+          aspect-ratio: 1;
+          @extend .f-ll;
+          background-color: #1CA5FB;
+          color: $text-white;
+          border-radius: 10px;
+          outline: 0px;
+          border: 0px;
+          height: fit-content;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+
+    .right {
+      display: grid;
+      gap: 20px;
+      align-content: start;
+      align-items: start;
+
+      .bet-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 40px;
+
+        .bet-meta-time {
+          @extend .f-smt;
+
+          .bet-meta-tkt {
+            @extend .f-xl;
+          }
+        }
+
+        .bet-meta-type {
+          @extend .f-xxl;
+        }
+      }
+
+      h3 {
+        @extend .f-l;
+        margin-top: 10px;
+      }
+
+      .bet-price-selection {
+        display: flex;
+        gap: 10px;
+
+        button,
+        .input {
+          padding: 10px;
+          border: 0px;
+          outline: 0px;
+          @extend .f-xl;
+          border-radius: $button-radius;
+        }
+
+        .input {
+          box-shadow: inset 0px 10px 10px rgba(0, 0, 0, 0.2);
+          width: 200px;
+          text-align: center;
+          position: relative;
+
+          span {
+            background-color: $yellow;
+            padding: 10px;
+            outline: 1px solid black;
+            border-radius: $button-radius;
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
+
+        button {
+          min-width: 70px;
+          cursor: pointer;
+          outline: 1px solid rgb(206, 206, 206);
+        }
+      }
+
+      .popup-buttons {
+        display: flex;
+        gap: 10px;
+
+        button {
+          padding: 10px;
+          border: 0px;
+          outline: 0px;
+          @extend .f-l;
+          width: 100%;
+          cursor: pointer;
+        }
+
+        .submit {
+          background: $bg-green;
+          color: $text-white;
+          border-radius: $button-radius;
+        }
+
+        .cancel {
+          background: $bg-red;
+          color: $text-white;
+          border-radius: $button-radius;
+        }
+      }
+    }
+  }
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  .controls {
+    display: flex;
+    gap: 10px;
+
+    select {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .reload-btn {
+      padding: 6px 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+  }
+}
+
+.tickets-table th {
+  cursor: pointer;
+  &:hover {
+    background: #f0f4ff;
+  }
+}
+
+
+.popup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.tickets-table-container {
+  padding: 20px;
+  background: #f9f9fb;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.table-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background: #fafafa;
+    font-weight: 600;
+    color: #444;
+  }
+
+  tbody tr {
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #f4f8ff;
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+  }
+}
+
+.status {
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.pending {
+    color: #e69500;
+  }
+
+  &.void {
+    color: #d9534f;
+  }
+
+  &.completed {
+    color: #28a745;
+  }
+}
+
+.luck-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.4);
+  z-index: 3000;
+}
+
+.luck-card {
+  background: linear-gradient(135deg, #28a745, #45d98c);
+  padding: 40px 60px;
+  border-radius: 16px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  animation: popIn 0.5s ease forwards;
+  position: relative;
+
+  h2 {
+    font-size: 2rem;
+    margin: 10px 0;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .countdown {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 500;
+  }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }

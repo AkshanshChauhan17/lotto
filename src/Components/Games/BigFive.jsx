@@ -2,12 +2,13 @@ import { useState } from "react";
 import { game_matrix } from "../../data/game_init";
 import { AiFillDelete } from "react-icons/ai";
 import { PiEmpty } from "react-icons/pi";
+import LiveTime from "../Time/LiveTime";
 
 function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => i + start);
 }
 
-export default function BigFive({bets, setBets}) {
+export default function BigFive({ bets, setBets, cdd }) {
     const [selectedNumbers, setSelectedNumbers] = useState([]);
 
     const [showPricePopup, setShowPricePopup] = useState(false);
@@ -20,7 +21,7 @@ export default function BigFive({bets, setBets}) {
         C2: { min: 2, max: 2 },
         C3: { min: 3, max: 3 },
         C4: { min: 4, max: 4 },
-        "C2+C3": { min: 5, max: 5},
+        "C2+C3": { min: 5, max: 5 },
         BONUS: { min: 1, max: 1 },
         JACKPOT: { min: 1, max: 1 }
     };
@@ -132,7 +133,7 @@ export default function BigFive({bets, setBets}) {
                         <div className="smt">{selectedNumbers.length}/10</div>
                     </div>
                     <div className="left-matrix">
-                        {range(game_matrix[3].big_five.clickable_numbers[0], game_matrix[3].big_five.clickable_numbers[1]).map((e, i) => (
+                        {range(game_matrix[3].lotto_five.clickable_numbers[0], game_matrix[3].lotto_five.clickable_numbers[1]).map((e, i) => (
                             <button
                                 className="matrix-selector"
                                 style={{
@@ -145,7 +146,7 @@ export default function BigFive({bets, setBets}) {
                                 {e}
                             </button>
                         ))}
-                        {range(game_matrix[3].big_five.disabled_numbers[0], game_matrix[3].big_five.disabled_numbers[1]).map((e, i) => (
+                        {range(game_matrix[3].lotto_five.disabled_numbers[0], game_matrix[3].lotto_five.disabled_numbers[1]).map((e, i) => (
                             <button className="matrix-selector" key={i} disabled>{e}</button>
                         ))}
                     </div>
@@ -157,7 +158,7 @@ export default function BigFive({bets, setBets}) {
                     </div>
                     <div className="controller">
                         <div className="left-controllers-row-one">
-                            {game_matrix[3].big_five.controllers.row_one.map((e, i) => (
+                            {game_matrix[3].lotto_five.controllers.row_one.map((e, i) => (
                                 <button
                                     key={i}
                                     className="left-controller"
@@ -169,17 +170,17 @@ export default function BigFive({bets, setBets}) {
                             ))}
                         </div>
                         <div className="left-controllers-row-two">
-                            {game_matrix[3].big_five.controllers.row_two.map((e, i) => {
-                                if(e.name === "CANCEL") {
+                            {game_matrix[3].lotto_five.controllers.row_two.map((e, i) => {
+                                if (e.name === "CANCEL") {
                                     return <button
-                                    key={i}
-                                    className="left-controller"
-                                    style={{backgroundColor: selectedNumbers.length <= 0 ? "" : "#E20303", color: selectedNumbers.length <= 0 ? "" : "white"}}
-                                    disabled={selectedNumbers.length <= 0}
-                                    onClick={() => handleCancel()}
-                                >
-                                    {e.name}
-                                </button>
+                                        key={i}
+                                        className="left-controller"
+                                        style={{ backgroundColor: selectedNumbers.length <= 0 ? "" : "#E20303", color: selectedNumbers.length <= 0 ? "" : "white" }}
+                                        disabled={selectedNumbers.length <= 0}
+                                        onClick={() => handleCancel()}
+                                    >
+                                        {e.name}
+                                    </button>
                                 }
                                 return <button
                                     key={i}
@@ -233,67 +234,49 @@ export default function BigFive({bets, setBets}) {
                 </div>
             </div>
 
-            {/* Price selection popup */}
             {showPricePopup && (
                 <div className="price-popup-overlay">
                     <div className="price-popup">
-                        <h3>Select Price</h3>
-                        <input
-                            type="number"
-                            min="0.01"
-                            step="0.01"
-                            value={price}
-                            onChange={(e) => setPrice(Number(e.target.value))}
-                        />
-                        <div className="popup-buttons">
-                            <button className="submit" onClick={confirmBet}>Submit</button>
-                            <button className="cancel" onClick={cancelBet}>Cancel</button>
+                        <div className="left">
+                            <div className="title">Selected Numbers</div>
+                            <div className="numbers">
+                                {
+                                    selectedNumbers.map((e, i) => {
+                                        return <div className="number" key={i}>{e}</div>
+                                    })
+                                }
+                            </div>
+                        </div>
+                        <div className="right">
+                            <div className="bet-meta">
+                                <div className="bet-meta-time">
+                                    <LiveTime />
+                                    <div className="bet-meta-tkt">TKT{Math.floor(Math.random() * 999999)}</div>
+                                </div>
+                                <div className="bet-meta-type">Lotto Five</div>
+                            </div>
+                            <h3>Select Price</h3>
+                            <div className="bet-price-selection">
+                                <button onClick={() => {
+                                    if (price > 1) {
+                                        setPrice(price - 1);
+                                    }
+                                }}>${price - 1}</button>
+                                <div className="input">${price}</div>
+                                <button onClick={() => {
+                                    if (price < cdd.balance) {
+                                        setPrice(Number((price + 1)));
+                                    }
+                                }}>${price + 1}</button>
+                            </div>
+                            <div className="popup-buttons">
+                                <button className="submit" onClick={confirmBet}>Submit</button>
+                                <button className="cancel" onClick={cancelBet}>Cancel</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
-
-            {/* Popup CSS */}
-            <style jsx>{`
-                .price-popup-overlay {
-                    position: fixed;
-                    top: 0; left: 0;
-                    width: 100%; height: 100%;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 999;
-                }
-                .price-popup {
-                    background: white;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                    text-align: center;
-                }
-                .popup-buttons {
-                    margin-top: 15px;
-                    display: flex;
-                    gap: 10px;
-                    justify-content: center;
-                }
-                .popup-buttons .submit {
-                    background: #1CA5FB;
-                    color: white;
-                    padding: 8px 16px;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-                .popup-buttons .cancel {
-                    background: #ccc;
-                    padding: 8px 16px;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-            `}</style>
         </div>
     );
 }

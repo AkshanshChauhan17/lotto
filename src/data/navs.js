@@ -1,7 +1,10 @@
 const main_navigation = [
     {
+        name: "Popup",
+        url: "/popup"
+    },{
         name: "Game",
-        url: "/game/big-dice"
+        url: "/game/lotto-dice"
     }, {
         name: "Tickets",
         url: "/tickets"
@@ -22,23 +25,23 @@ const main_navigation = [
 
 const game_navigation = [
     {
-        name: "Big Dice",
-        url: "/game/big-dice",
-        slug: "big_dice",
+        name: "Lotto Dice",
+        url: "/game/lotto-dice",
+        slug: "lotto_dice",
         color: "#AC0404"
     }, {
-        name: "Big Six",
-        url: "/game/big-six",
+        name: "Lotto Six",
+        url: "/game/lotto-six",
         slug: "big_six",
         color: "#129900"
     }, {
-        name: "Big Max",
-        url: "/game/big-max",
+        name: "Lotto Max",
+        url: "/game/lotto-max",
         slug: "big_max",
         color: "#C09A04"
     }, {
-        name: "Big Five",
-        url: "/game/big-five",
+        name: "Lotto Five",
+        url: "/game/lotto-five",
         slug: "big_five",
         color: "#006CAE"
     }, {

@@ -1,9 +1,9 @@
 const game_matrix = [
     {
-        big_dice: {
+        lotto_dice: {
             clickable_numbers: [1, 39],
             disabled_numbers: [40, 50],
-            bg_img: "/game_assets/big-dice.svg",
+            bg_img: "/game_assets/lotto-dice.svg",
             controllers: {
                 row_one: [
                     {
@@ -38,10 +38,10 @@ const game_matrix = [
         }
     },
     {
-        big_six: {
+        lotto_six: {
             clickable_numbers: [1, 49],
             disabled_numbers: [50, 50],
-            bg_img: "./game_assets/big-six.svg",
+            bg_img: "/game_assets/lotto-six.svg",
             controllers: {
                 row_one: [
                     {
@@ -76,10 +76,10 @@ const game_matrix = [
         }
     },
     {
-        big_max: {
+        lotto_max: {
             clickable_numbers: [1, 50],
             disabled_numbers: [],
-            bg_img: "./game_assets/big-dice.svg",
+            bg_img: "/game_assets/lotto-max.svg",
             controllers: {
                 row_one: [
                     {
@@ -114,10 +114,10 @@ const game_matrix = [
         },
     },
     {
-        big_five: {
+        lotto_five: {
             clickable_numbers: [1, 49],
             disabled_numbers: [50, 50],
-            bg_img: "./game_assets/big-dice.svg",
+            bg_img: "/game_assets/lotto-five.svg",
             controllers: {
                 row_one: [
                     {

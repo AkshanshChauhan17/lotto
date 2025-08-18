@@ -7,14 +7,17 @@ import { useEffect, useState } from "react";
 import Register from "./Components/Auth/Register";
 import Login from "./Components/Auth/Login";
 import { api } from "./Fx/api_connector";
+import PopUpBlast from "./Components/Animations/PopUpBlast";
+import TicketsTable from "./Components/Tables/Tickets";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
   const [customerDetails, setCustomerDetails] = useState({});
   const nav = useNavigate();
+  const [updateNumber, setUpdateNumber] = useState(1002002);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    var token = localStorage.getItem("token");
 
     async function fetchData() {
       try {
@@ -28,8 +31,7 @@ function App() {
 
         const currentGuid = localStorage.getItem("guid");
         if (!currentGuid) return nav("/");
-
-        const customer = await api.get(`/customers/${currentGuid}`, token);
+        const customer = await api.get(`/customers/${currentGuid}`, null,  token);
         setCustomerDetails(customer);
       } catch {
         nav("/");
@@ -37,7 +39,7 @@ function App() {
     }
 
     fetchData();
-  }, []);
+  }, [updateNumber]);
 
   if (!isLogin) {
     return <Routes>
@@ -50,11 +52,13 @@ function App() {
     <div className="main">
       <Navigation cud={customerDetails} />
       <Routes>
+        <Route path={"/popup"} element={<PopUpBlast />} />
         <Route path={"/login"} element={<Navigate to={"/"} />} />
-        <Route path={"/"} element={<Navigate to={"/game/big-dice"} />} />
+        <Route path={"/"} element={<Navigate to={"/game/lotto-dice"} />} />
+        <Route path={"/tickets"} element={<TicketsTable />} />
         {
           game_navigation.map((e, i) => {
-            return <Route path={e.url} key={i} element={<Game />} />
+            return <Route path={e.url} key={i} element={<Game cd={customerDetails} upNum={setUpdateNumber} />} />
           })
         }
       </Routes>
