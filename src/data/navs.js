@@ -1,8 +1,4 @@
-const main_navigation = [
-    {
-        name: "Popup",
-        url: "/popup"
-    },{
+const main_navigation = [{
         name: "Game",
         url: "/game/lotto-dice"
     }, {

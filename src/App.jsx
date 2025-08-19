@@ -43,7 +43,7 @@ function App() {
 
   if (!isLogin) {
     return <Routes>
-      <Route path={"*"} element={<Navigate to={"/login"} />} />
+      <Route path={"/"} element={<Navigate to={"/login"} />} />
       <Route path={"/login"} element={<Login isLoginFun={setIsLogin} />} />
       <Route path={"/register"} element={<Register isLoginFun={setIsLogin} />} />
     </Routes>
