@@ -19,10 +19,10 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
     // Bet rules mapping
     const betRules = {
         C1: { min: 1, max: 10 },
-        C2: { min: 2, max: 2 },
-        C3: { min: 3, max: 3 },
-        C4: { min: 4, max: 4 },
-        "C2+C3": { min: 5, max: 5 },
+        C2: { min: 2, max: 10 },
+        C3: { min: 3, max: 10 },
+        C4: { min: 4, max: 10 },
+        "C2+C3": { min: 5, max: 10 },
         BONUS: { min: 1, max: 1 },
         JACKPOT: { min: 1, max: 1 }
     };

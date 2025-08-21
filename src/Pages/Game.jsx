@@ -8,6 +8,8 @@ import BigMax from "../Components/Games/BigMax";
 import BigFive from "../Components/Games/BigFive";
 import { api } from "../Fx/api_connector";
 import BestOfLuckPopup from "../Components/BestOfLuck";
+import Pick2Game from "../Components/Games/PickTwo";
+import Pick3Game from "../Components/Games/PickThree";
 
 export default function Game({ cd, upNum }) {
     const [betss, setBetss] = useState([]);
@@ -58,6 +60,8 @@ export default function Game({ cd, upNum }) {
             {currentLocation === "/game/lotto-six" && <BigSix cdd={cd} bets={betss} setBets={setBetss} />}
             {currentLocation === "/game/lotto-max" && <BigMax cdd={cd} bets={betss} setBets={setBetss} />}
             {currentLocation === "/game/lotto-five" && <BigFive cdd={cd} bets={betss} setBets={setBetss} />}
+            {currentLocation === "/game/pick-two" && <Pick2Game />}
+            {currentLocation === "/game/pick-three" && <Pick3Game />}
             {show && <BestOfLuckPopup show={show} onClose={()=>setShow(false)} />}
         </div>
     );

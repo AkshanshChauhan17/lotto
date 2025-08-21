@@ -43,12 +43,12 @@ const game_navigation = [
     }, {
         name: "Pick 2",
         url: "/game/pick-two",
-        slug: "pick_two",
+        slug: "pick-two",
         color: ""
     }, {
         name: "Pick 3",
         url: "/game/pick-three",
-        slug: "pick_three",
+        slug: "pick-three",
         color: ""
     }
 ];

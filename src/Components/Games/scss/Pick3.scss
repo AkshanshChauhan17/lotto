@@ -1,0 +1,124 @@
+.pick3-root {
+  max-width: 950px;
+  margin: 20px auto;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.pick3-container {
+  display: flex;
+  gap: 20px;
+}
+
+.pick3-left {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.line-inputs {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #eef;
+  padding: 8px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.line-inputs label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.line-inputs input,
+.line-inputs select {
+  padding: 6px;
+  width: 80px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.pick3-cart {
+  flex: 1;
+  border-left: 2px solid #f0f0f0;
+  padding-left: 16px;
+}
+
+.pick3-cart h3 {
+  margin-top: 0;
+}
+
+.pick3-cart ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+
+.pick3-cart li {
+  background: #f9f9f9;
+  margin-bottom: 6px;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.summary {
+  margin: 10px 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: #2b8cff;
+  color: #fff;
+}
+
+.btn.danger {
+  background: #ffefef;
+  color: #c23;
+}
+
+.btn.add {
+  background: #f0f8ff;
+}
+
+.message {
+  margin-top: 12px;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.message.error {
+  background: #ffe6e6;
+  color: #a00;
+}
+
+.message.success {
+  background: #e6ffed;
+  color: #0a4;
+}
+
+.rules {
+  margin-top: 16px;
+  border-top: 1px dashed #ddd;
+  padding-top: 12px;
+  font-size: 0.9rem;
+}
