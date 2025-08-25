@@ -15,7 +15,7 @@ export default function GameNavigation() {
         <div className="links">
             {
                 game_navigation.map((e, i) => {
-                    return <Link to={e?.url} key={i} style={{backgroundColor: select === i && e?.color, margin: select === i && "0px"}} className={select === i ? "link selected-link" : "link"} onClick={()=>setSelect(i)}>{e?.name}</Link>
+                    return <Link to={e?.url} key={i} style={{backgroundColor: select === i && e?.color, color: select === i && e?.t_color, margin: select === i && "0px"}} className={select === i ? "link selected-link" : "link"} onClick={()=>setSelect(i)}>{e?.name}</Link>
                 })
             }
         </div>

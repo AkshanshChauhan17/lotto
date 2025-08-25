@@ -1,20 +1,26 @@
 import React, { useState } from "react";
 import "./scss/Pick3.scss";
 
-const INITIAL_LINE = { number1: "", number2: "", number3: "", stake: 1, type: "STRAIGHT" };
+const INITIAL_LINE = {
+  number1: null,
+  number2: null,
+  number3: null,
+  stake: 1,
+  type: "STRAIGHT",
+};
 
 export default function Pick3Game({
   apiUrl = "http://localhost:5000/api/tickets",
   customerId = localStorage.guid,
   storeId = null,
-  gameId = 6,
+  gameId = 6, // different game id for pick3
   drawId = null,
 }) {
   const [lines, setLines] = useState([INITIAL_LINE]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
-  const total = lines.length * INITIAL_LINE.stake;
+  const total = lines.reduce((sum, l) => sum + (l.stake || 1), 0);
 
   function updateLine(idx, field, value) {
     setLines((prev) =>
@@ -30,15 +36,22 @@ export default function Pick3Game({
     setLines((prev) => prev.filter((_, i) => i !== idx));
   }
 
+  function autoPick(idx) {
+    const nums = [];
+    while (nums.length < 3) {
+      const n = Math.floor(Math.random() * 10);
+      if (!nums.includes(n)) nums.push(n); // avoid duplicates
+    }
+    updateLine(idx, "number1", nums[0]);
+    updateLine(idx, "number2", nums[1]);
+    updateLine(idx, "number3", nums[2]);
+  }
+
   function validate() {
     if (lines.length === 0) return "Add at least one line.";
     for (const [i, l] of lines.entries()) {
-      if (
-        !/^[0-9]{1,2}$/.test(l.number1) ||
-        !/^[0-9]{1,2}$/.test(l.number2) ||
-        !/^[0-9]{1,2}$/.test(l.number3)
-      ) {
-        return `Line ${i + 1}: select three numbers (0–99).`;
+      if (l.number1 === null || l.number2 === null || l.number3 === null) {
+        return `Line ${i + 1}: select three numbers (0–9).`;
       }
     }
     return null;
@@ -53,7 +66,10 @@ export default function Pick3Game({
     try {
       const res = await fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${localStorage.token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.token}`,
+        },
         body: JSON.stringify({
           customer_id: customerId,
           store_id: storeId,
@@ -83,54 +99,60 @@ export default function Pick3Game({
     setLoading(false);
   }
 
+  function renderNumberRow(idx, field, selected) {
+    return (
+      <div className="number-row">
+        {[...Array(10).keys()].map((num) => (
+          <button
+            key={num}
+            className={`num-btn ${selected === num ? "selected" : ""}`}
+            onClick={() => updateLine(idx, field, num)}
+          >
+            {num}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="pick3-root">
-      <h2>Pick-3 Game</h2>
+      <h2 className="title">Pick-3 Game</h2>
       <div className="pick3-container">
         {/* Left Side Inputs */}
         <div className="pick3-left">
           {lines.map((l, idx) => (
-            <div className="line-inputs" key={idx}>
-              <label>
-                <span>Select Number 1</span>
-                <input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={l.number1}
-                  onChange={(e) => updateLine(idx, "number1", e.target.value)}
-                />
-              </label>
-              <label>
-                <span>Select Number 2</span>
-                <input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={l.number2}
-                  onChange={(e) => updateLine(idx, "number2", e.target.value)}
-                />
-              </label>
-              <label>
-                <span>Select Number 3</span>
-                <input
-                  type="number"
-                  min="0"
-                  max="99"
-                  value={l.number3}
-                  onChange={(e) => updateLine(idx, "number3", e.target.value)}
-                />
-              </label>
-              <label>
-                <span>Play Type</span>
-                <select
-                  value={l.type}
-                  onChange={(e) => updateLine(idx, "type", e.target.value)}
-                >
-                  <option value="STRAIGHT">Straight</option>
-                  <option value="BOX">Box</option>
-                </select>
-              </label>
+            <div className="line-inputs card" key={idx}>
+              <div className="num-section">
+                <span className="label">Select Number 1</span>
+                {renderNumberRow(idx, "number1", l.number1)}
+              </div>
+              <div className="num-section">
+                <span className="label">Select Number 2</span>
+                {renderNumberRow(idx, "number2", l.number2)}
+              </div>
+              <div className="num-section">
+                <span className="label">Select Number 3</span>
+                {renderNumberRow(idx, "number3", l.number3)}
+              </div>
+
+              <div className="controls">
+                <label>
+                  <span>Play Type</span>
+                  <select
+                    value={l.type}
+                    onChange={(e) => updateLine(idx, "type", e.target.value)}
+                  >
+                    <option value="STRAIGHT">Straight</option>
+                    <option value="BOX">Box</option>
+                  </select>
+                </label>
+
+                <button className="btn auto" onClick={() => autoPick(idx)}>
+                  🎲 Auto Pick
+                </button>
+              </div>
+
               {lines.length > 1 && (
                 <button className="btn danger" onClick={() => removeLine(idx)}>
                   Remove
@@ -144,12 +166,14 @@ export default function Pick3Game({
         </div>
 
         {/* Right Side Cart */}
-        <div className="pick3-cart">
+        <div className="pick3-cart card">
           <h3>Cart</h3>
           <ul>
             {lines.map((l, idx) => (
               <li key={idx}>
-                {l.number1}-{l.number2}-{l.number3} ({l.type}) | ${l.stake}
+                {l.number1 !== null ? l.number1 : "?"}-
+                {l.number2 !== null ? l.number2 : "?"}-
+                {l.number3 !== null ? l.number3 : "?"} ({l.type}) | ${l.stake}
               </li>
             ))}
           </ul>
@@ -170,13 +194,13 @@ export default function Pick3Game({
         <div className={`message ${message.type}`}>{message.text}</div>
       )}
 
-      <div className="rules">
+      <div className="rules card">
         <h4>Rules & Payouts</h4>
         <ul>
-          <li>Pick exactly 3 numbers between 0 and 99.</li>
+          <li>Pick exactly 3 numbers between 0 and 9.</li>
           <li>Cost: $1 per play.</li>
-          <li>Straight win (exact order) pays $550.</li>
-          <li>Box win (any order) pays $91.</li>
+          <li>Straight win (exact order) pays $500.</li>
+          <li>Box win (any order) pays $160.</li>
           <li>Draws occur twice daily (midday & evening).</li>
         </ul>
       </div>

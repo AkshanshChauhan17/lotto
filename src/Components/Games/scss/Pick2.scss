@@ -126,3 +126,164 @@ h2 {
   padding-top: 12px;
   font-size: 0.9rem;
 }
+
+
+
+.pick3-root {
+  font-family: "Segoe UI", sans-serif;
+  padding: 24px;
+  background: linear-gradient(135deg, #f9fafc, #eef2f7);
+  min-height: 100vh;
+
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+
+  .pick3-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+
+    .line-inputs {
+      display: grid;
+      grid-template-columns: auto auto auto;
+    }
+  }
+
+  .card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .num-section {
+    margin-bottom: 20px;
+    .label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #444;
+    }
+  }
+
+  .number-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .num-btn {
+    width: 50px;
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    box-shadow: inset 0 0 0 2px transparent;
+
+    &:hover {
+      background: #e2e6ea;
+    }
+
+    &.selected {
+      background: #007bff;
+      color: #fff;
+      box-shadow: inset 0 0 0 2px #0056b3;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    gap: 10px;
+
+    select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  .btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease-in-out;
+
+    &.primary {
+      background: #28a745;
+      color: #fff;
+      &:hover {
+        background: #218838;
+      }
+    }
+    &.danger {
+      background: #dc3545;
+      color: #fff;
+      &:hover {
+        background: #b02a37;
+      }
+    }
+    &.add {
+      background: #007bff;
+      color: #fff;
+      &:hover {
+        background: #0056b3;
+      }
+    }
+    &.auto {
+      background: #ffc107;
+      color: #212529;
+      &:hover {
+        background: #e0a800;
+      }
+    }
+  }
+
+  .summary {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #333;
+  }
+
+  .rules {
+    margin-top: 24px;
+    ul {
+      padding-left: 20px;
+      li {
+        margin-bottom: 6px;
+      }
+    }
+  }
+
+  .message {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+
+    &.success {
+      background: #d4edda;
+      color: #155724;
+    }
+    &.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  }
+}

@@ -9,6 +9,8 @@ import Login from "./Components/Auth/Login";
 import { api } from "./Fx/api_connector";
 import PopUpBlast from "./Components/Animations/PopUpBlast";
 import TicketsTable from "./Components/Tables/Tickets";
+import GameHistory from "./Components/Tables/History";
+import Locations from "./Components/Games/Location";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -56,6 +58,10 @@ function App() {
         <Route path={"/login"} element={<Navigate to={"/"} />} />
         <Route path={"/"} element={<Navigate to={"/game/lotto-dice"} />} />
         <Route path={"/tickets"} element={<TicketsTable />} />
+        <Route path={"/history"} element={<GameHistory />} />
+        <Route path={"/store"} element={<TicketsTable />} />
+        <Route path={"/web"} element={<TicketsTable />} />
+        <Route path={"/location"} element={<Locations />} />
         {
           game_navigation.map((e, i) => {
             return <Route path={e.url} key={i} element={<Game cd={customerDetails} upNum={setUpdateNumber} />} />

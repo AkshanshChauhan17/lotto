@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../Fx/api_connector";
 import TicketDetailModal from "./TicketDetails";
+import Print from "../Games/Print/print";
 
 export default function TicketsTable() {
   const [tickets, setTickets] = useState([]);
@@ -52,6 +53,8 @@ export default function TicketsTable() {
       <div className="table-header">
         <h2 className="table-title">Tickets</h2>
 
+        <Print />
+
         <div className="controls">
           {/* Filter */}
           <select
@@ -61,7 +64,8 @@ export default function TicketsTable() {
             <option value="ALL">All</option>
             <option value="PENDING">Pending</option>
             <option value="VOID">Void</option>
-            <option value="COMPLETED">Completed</option>
+            <option value="WON">Won</option>
+            <option value="LOST">Lost</option>
           </select>
 
           {/* Reload Button */}

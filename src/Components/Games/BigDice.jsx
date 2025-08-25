@@ -27,6 +27,17 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         JACKPOT: { min: 1, max: 1 }
     };
 
+    const autoSelect = () => {
+        const allNums = range(
+            game_matrix[0].lotto_dice.clickable_numbers[0],
+            game_matrix[0].lotto_dice.clickable_numbers[1]
+        );
+
+        const shuffled = allNums.sort(() => 0.5 - Math.random());
+        setSelectedNumbers(shuffled.slice(0, 10));
+    };
+
+
     const handleBetTypeClick = (game_name, bet_type) => {
         if (bets.length >= 10) {
             alert("Cart is full. You can only have 10 bets.");
@@ -42,7 +53,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         if (bet_type in betRules) {
             const rule = betRules[bet_type];
             if (selectedNumbers.length < rule.min || selectedNumbers.length > rule.max) {
-                alert(`For ${bet_type}, you must select exactly between ${rule.min} and ${rule.max} numbers.`);
+                alert(`For ${bet_type}, you must select between ${rule.min} and ${rule.max} numbers.`);
                 return;
             }
         }
@@ -58,39 +69,17 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
 
         const { game_name, bet_type } = tempBetData;
 
-        if (bet_type === "C1") {
-            // Partial bets for C1
-            const partCount = selectedNumbers.length;
-            const dividedPrice = price / partCount;
+        // ✅ Updated: No partition for C1
+        const newBet = {
+            date: new Date().toLocaleString("en-GB"),
+            ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+            game_name,
+            bet_type,
+            numbers: [...selectedNumbers], // store numbers directly
+            amount: price
+        };
 
-            const newBets = selectedNumbers.map((_, idx) => ({
-                date: new Date().toLocaleString("en-GB"),
-                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                game_name,
-                bet_type,
-                part: `P${idx + 1}`,
-                amount: dividedPrice
-            }));
-
-            if (bets.length + newBets.length > 10) {
-                alert("Adding these bets would exceed cart limit of 10.");
-                return;
-            }
-
-            setBets(prev => [...prev, ...newBets]);
-
-        } else {
-            // Normal bet (C2, C3, etc.)
-            const newBet = {
-                date: new Date().toLocaleString("en-GB"),
-                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                game_name,
-                bet_type,
-                part: "P1",
-                amount: price
-            };
-            setBets(prev => [...prev, newBet]);
-        }
+        setBets(prev => [...prev, newBet]);
 
         setShowPricePopup(false);
         setTempBetData(null);
@@ -102,7 +91,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         setTempBetData(null);
         setPrice(1);
         setShowPricePopup(false);
-        setSelectedNumbers([]); // clear numbers on cancel
+        setSelectedNumbers([]);
     };
 
     const removeBet = (index) => {
@@ -125,7 +114,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         setSelectedNumbers([]);
     };
 
-    const openPop = ()=> {
+    const openPop = () => {
         setPopup(true);
         setTimeout(() => {
             setPopup(false);
@@ -136,12 +125,49 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         hS(openPop);
     };
 
+    // Combination logic
+    function combinations(n, k) {
+        if (k > n) return 0;
+        let num = 1,
+            den = 1;
+        for (let i = 0; i < k; i++) {
+            num *= n - i;
+            den *= i + 1;
+        }
+        return num / den;
+    }
+
+    function calculateLines(selected, gameType) {
+        const n = selected.length;
+        switch (gameType.toUpperCase()) {
+            case "C1":
+                return combinations(n, 1);
+            case "C2":
+                return combinations(n, 2);
+            case "C3":
+                return combinations(n, 3);
+            case "C4":
+                return combinations(n, 4);
+            case "C2+C3":
+                return combinations(n, 2) + combinations(n, 3);
+            case "PICK2":
+                return combinations(n, 2);
+            case "PICK3":
+                return combinations(n, 3);
+            default:
+                return 0;
+        }
+    }
+
+    console.log(bets)
+
     return (
         <div className="game-inner">
             <div className="left">
                 <div className="left-top">
                     <div className="head">
                         <div className="smt">Choose any number</div>
+                        <button style={{ padding: "2px 10px" }} onClick={() => autoSelect()}>Auto Pick 10</button>
                         <div className="smt">{selectedNumbers.length}/10</div>
                     </div>
                     <div className="left-matrix">
@@ -208,6 +234,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 </div>
             </div>
 
+            {/* ✅ Cart View */}
             <div className="right">
                 <div className="head">
                     <div className="left-text">Selected bets</div>
@@ -218,25 +245,35 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                         bets.length <= 0 && <div className="empty">Empty Cart!<PiEmpty className="empty-icon" /></div>
                     }
                     {bets.map((e, i) => (
-                        <div className="bet" key={i}>
-                            <div className="bet-left">
-                                <div className="top">{e.date}</div>
-                                <div className="bottom">{e.ticket_id}</div>
-                            </div>
-                            <div className="bet-middle">
-                                <div className="top">{e.game_name}</div>
-                                <div className="bottom">
-                                    <div className="b-left">{e.bet_type}</div>
-                                    <div className="b-right">/{e.part}</div>
+                        <div className="bet-ar" key={i}>
+                            <div className="bet">
+                                <div className="bet-left">
+                                    <div className="top">{e.date}</div>
+                                    <div className="bottom">{e.ticket_id}</div>
                                 </div>
+                                <div className="bet-middle">
+                                    <div className="top">{e.game_name}</div>
+                                    <div className="bottom">
+                                        <div className="b-left">{e.bet_type}</div>
+                                        <div className="b-right">/L {calculateLines(e.numbers, e.bet_type)}</div>
+                                    </div>
+                                </div>
+                                <div className="bet-right">
+                                    <div className="left">${e.amount.toFixed(2)}</div>
+                                    {/* <div className="right">/${(e.amount * 7).toFixed(2)}</div> */}
+                                </div>
+                                <button className="delete" onClick={() => removeBet(i)}>
+                                    <AiFillDelete className="delete-icon" />
+                                </button>
                             </div>
-                            <div className="bet-right">
-                                <div className="left">${e.amount.toFixed(2)}</div>
-                                <div className="right">/${(e.amount * 7).toFixed(2)}</div>
+                            <div className="bottom-numbers">
+                                <b>Selected Numbers:</b>
+                                {e.numbers && (
+                                    <div className="b-numbers">
+                                        {e.numbers.join(", ")}
+                                    </div>
+                                )}
                             </div>
-                            <button className="delete" onClick={() => removeBet(i)}>
-                                <AiFillDelete className="delete-icon" />
-                            </button>
                         </div>
                     ))}
                 </div>
@@ -254,35 +291,25 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                         <div className="left">
                             <div className="title">Selected Numbers</div>
                             <div className="numbers">
-                                {
-                                    selectedNumbers.map((e, i) => {
-                                        return <div className="number" key={i}>{e}</div>
-                                    })
-                                }
+                                {selectedNumbers.map((e, i) => (
+                                    <div className="number" key={i}>{e}</div>
+                                ))}
                             </div>
                         </div>
                         <div className="right">
                             <div className="bet-meta">
                                 <div className="bet-meta-time">
                                     <LiveTime />
-                                    <div className="bet-meta-tkt">TKT{Math.floor(Math.random()*999999)}</div>
+                                    <div className="bet-meta-tkt">TKT{Math.floor(Math.random() * 999999)}</div>
                                 </div>
                                 <div className="bet-meta-type">Lotto Dice</div>
                             </div>
                             <h3>Select Price</h3>
                             {price >= 10 && <div className="discount"><b>Hay!</b> you got <b>10% DISCOUNT</b></div>}
                             <div className="bet-price-selection">
-                                <button onClick={() => {
-                                    if (price > 1) {
-                                        setPrice(price - 1);
-                                    }
-                                }}>${price - 1}</button>
+                                <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
                                 <div className="input">${price} {price >= 10 && <span>${(price * 0.10).toFixed(1)}</span>}</div>
-                                <button onClick={() => {
-                                    if (price < cdd.balance ) {
-                                        setPrice(Number((price + 1)));
-                                    }
-                                }}>${price + 1}</button>
+                                <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
                             </div>
                             <div className="popup-buttons">
                                 <button className="submit" onClick={confirmBet}>Submit</button>
