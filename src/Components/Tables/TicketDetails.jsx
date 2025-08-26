@@ -5,6 +5,7 @@ import Bx from "./Bx";
 
 export default function TicketDetailModal({ id, onClose }) {
     const [ticket, setTicket] = useState(null);
+        const ref = useRef();
     useEffect(() => {
         api.get(`/tickets/${id}`, null, localStorage.token)
             .then((e) => setTicket(e))
@@ -17,11 +18,9 @@ export default function TicketDetailModal({ id, onClose }) {
         return <p></p>;
     }
 
-    const ref = useRef();
-
     const handleInstall = () => {
         if (ref.current === null) return;
-        toPng(ref.current).then((dataUrl) => {
+        toPng(ref.current, {f}).then((dataUrl) => {
             const link = document.createElement("a");
             link.download = ticket.serial;
             link.href = dataUrl;

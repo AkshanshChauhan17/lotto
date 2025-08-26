@@ -954,10 +954,13 @@ body {
 }
 
 .pick2-root {
-  font-family: "Segoe UI", sans-serif;
+  max-width: 100% !important;
+  margin: 20px auto;
   padding: 24px;
-  background: linear-gradient(135deg, #f9fafc, #eef2f7);
-  min-height: 100vh;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
 
   .title {
     font-size: 28px;
@@ -974,7 +977,11 @@ body {
 
     .line-inputs {
       display: grid;
-      grid-template-columns: auto auto;
+      grid-template-columns: auto;
+      .lines {
+        display: flex;
+        gap: 40px;
+      }
     }
   }
 

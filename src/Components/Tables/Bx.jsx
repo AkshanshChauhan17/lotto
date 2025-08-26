@@ -1,5 +1,6 @@
 import { toPng } from "html-to-image";
 import QrCodeExample from "../Games/QR/QrCode";
+import { useRef } from "react";
 
 export default function Bx({ line, tkt }) {
     const ref = useRef();

@@ -13,7 +13,7 @@ export default function Pick3Game({
   apiUrl = "http://localhost:5000/api/tickets",
   customerId = localStorage.guid,
   storeId = null,
-  gameId = 6, // different game id for pick3
+  gameId = 6,
   drawId = null,
 }) {
   const [lines, setLines] = useState([INITIAL_LINE]);
@@ -77,9 +77,9 @@ export default function Pick3Game({
           draw_id: drawId,
           lines: lines.map((l) => ({
             bet_type: "PICK3",
-            numbers: `${l.number1}-${l.number2}-${l.number3}`,
+            numbers: `${l.number1},${l.number2},${l.number3}`,
             stake: l.stake,
-            play_type: l.type,
+            inner_type: l.type,
           })),
         }),
       });
@@ -123,17 +123,19 @@ export default function Pick3Game({
         <div className="pick3-left">
           {lines.map((l, idx) => (
             <div className="line-inputs card" key={idx}>
-              <div className="num-section">
-                <span className="label">Select Number 1</span>
-                {renderNumberRow(idx, "number1", l.number1)}
-              </div>
-              <div className="num-section">
-                <span className="label">Select Number 2</span>
-                {renderNumberRow(idx, "number2", l.number2)}
-              </div>
-              <div className="num-section">
-                <span className="label">Select Number 3</span>
-                {renderNumberRow(idx, "number3", l.number3)}
+              <div className="lines">
+                <div className="num-section">
+                  <span className="label">Select Number 1</span>
+                  {renderNumberRow(idx, "number1", l.number1)}
+                </div>
+                <div className="num-section">
+                  <span className="label">Select Number 2</span>
+                  {renderNumberRow(idx, "number2", l.number2)}
+                </div>
+                <div className="num-section">
+                  <span className="label">Select Number 3</span>
+                  {renderNumberRow(idx, "number3", l.number3)}
+                </div>
               </div>
 
               <div className="controls">

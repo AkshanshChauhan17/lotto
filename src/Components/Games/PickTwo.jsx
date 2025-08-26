@@ -70,9 +70,9 @@ export default function Pick2Game({
           draw_id: drawId,
           lines: lines.map((l) => ({
             bet_type: "PICK2",
-            numbers: `${l.number1}-${l.number2}`,
+            numbers: `${l.number1},${l.number2}`,
             stake: l.stake,
-            play_type: l.type,
+            inner_type: l.type,
           })),
         }),
       });
@@ -108,6 +108,16 @@ export default function Pick2Game({
     );
   }
 
+  function renderNumberRowDummy() {
+    return (
+      <div className="number-row">
+        {[...Array(10).keys()].map(() => (
+          <button></button>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="pick2-root">
       <h2 className="title">Pick-2 Game</h2>
@@ -116,13 +126,15 @@ export default function Pick2Game({
         <div className="pick2-left">
           {lines.map((l, idx) => (
             <div className="line-inputs card" key={idx}>
-              <div className="num-section">
-                <span className="label">Select Number 1</span>
-                {renderNumberRow(idx, "number1", l.number1)}
-              </div>
-              <div className="num-section">
-                <span className="label">Select Number 2</span>
-                {renderNumberRow(idx, "number2", l.number2)}
+              <div className="lines">
+                <div className="num-section">
+                  <span className="label">Select Number 1</span>
+                  {renderNumberRow(idx, "number1", l.number1)}
+                </div>
+                <div className="num-section">
+                  <span className="label">Select Number 2</span>
+                  {renderNumberRow(idx, "number2", l.number2)}
+                </div>
               </div>
 
               <div className="controls">
@@ -133,7 +145,7 @@ export default function Pick2Game({
                     onChange={(e) => updateLine(idx, "type", e.target.value)}
                   >
                     <option value="STRAIGHT">Straight</option>
-                    <option value="BOX">Box</option>
+                    <option value="MATCH_FIRST">Match First</option>
                   </select>
                 </label>
 
