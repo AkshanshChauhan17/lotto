@@ -53,8 +53,6 @@ export default function TicketsTable() {
       <div className="table-header">
         <h2 className="table-title">Tickets</h2>
 
-        <Print />
-
         <div className="controls">
           {/* Filter */}
           <select

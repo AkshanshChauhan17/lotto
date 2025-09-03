@@ -18,13 +18,13 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
 
     // Bet rules (adjust if Lotto Six has different rules)
     const betRules = {
-        C1: { min: 1, max: 12 },
-        C2: { min: 2, max: 12 },
-        C3: { min: 3, max: 12 },
-        C4: { min: 4, max: 12 },
-        "C2+C3": { min: 5, max: 12 },
-        PICK2: { min: 2, max: 12 },
-        PICK3: { min: 3, max: 12 },
+        C1: { min: 1, max: 10 },
+        C2: { min: 2, max: 10 },
+        C3: { min: 3, max: 10 },
+        C4: { min: 4, max: 10 },
+        "C2+C3": { min: 5, max: 10 },
+        PICK2: { min: 2, max: 10 },
+        PICK3: { min: 3, max: 10 },
         BONUS: { min: 1, max: 1 },
         JACKPOT: { min: 1, max: 1 }
     };
@@ -35,7 +35,7 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
             game_matrix[1].lotto_six.clickable_numbers[1]
         );
         const shuffled = allNums.sort(() => 0.5 - Math.random());
-        setSelectedNumbers(shuffled.slice(0, 12));
+        setSelectedNumbers(shuffled.slice(0, 10));
     };
 
     const handleBetTypeClick = (game_name, bet_type) => {
@@ -165,9 +165,9 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
                     <div className="head">
                         <div className="smt">Choose any number</div>
                         <button style={{ padding: "2px 10px" }} onClick={autoSelect}>
-                            Auto Pick 12
+                            Auto Pick 10
                         </button>
-                        <div className="smt">{selectedNumbers.length}/12</div>
+                        <div className="smt">{selectedNumbers.length}/10</div>
                     </div>
                     <div className="left-matrix">
                         {range(
@@ -308,7 +308,6 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
 
             {popup && <PopUpBlast />}
 
-            {/* PRICE POPUP */}
             {showPricePopup && (
                 <div className="price-popup-overlay">
                     <div className="price-popup">
@@ -316,9 +315,7 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
                             <div className="title">Selected Numbers</div>
                             <div className="numbers">
                                 {selectedNumbers.map((e, i) => (
-                                    <div className="number" key={i}>
-                                        {e}
-                                    </div>
+                                    <div className="number" key={i}>{e}</div>
                                 ))}
                             </div>
                         </div>
@@ -326,41 +323,34 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
                             <div className="bet-meta">
                                 <div className="bet-meta-time">
                                     <LiveTime />
-                                    <div className="bet-meta-tkt">
-                                        TKT{Math.floor(Math.random() * 999999)}
-                                    </div>
+                                    <div className="bet-meta-tkt">TKT{Math.floor(Math.random() * 999999)}</div>
                                 </div>
-                                <div className="bet-meta-type">Lotto Six</div>
+                                <div className="bet-meta-type">Lotto Dice</div>
                             </div>
                             <h3>Select Price</h3>
-                            {price >= 10 && (
-                                <div className="discount">
-                                    <b>Hay!</b> you got <b>10% DISCOUNT</b>
-                                </div>
-                            )}
+                            {price >= 10 && <div className="discount"><b>Hay!</b> you got <b>10% DISCOUNT</b></div>}
                             <div className="bet-price-selection">
-                                <button onClick={() => price > 1 && setPrice(price - 1)}>
-                                    ${price - 1}
-                                </button>
-                                <div className="input">
-                                    ${price}{" "}
-                                    {price >= 10 && <span>${(price * 0.1).toFixed(1)}</span>}
-                                </div>
-                                <button
-                                    onClick={() =>
-                                        price < cdd.balance && setPrice(price + 1)
-                                    }
-                                >
-                                    ${price + 1}
-                                </button>
+                                <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
+                                <div className="input">${price} {price >= 10 && <span>${(price * 0.10).toFixed(1)}</span>}</div>
+                                <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
                             </div>
+
+                            <div className="number-pad">
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setPrice(Number(`${price}${num}`))}
+                                    >
+                                        {num}
+                                    </button>
+                                ))}
+                                <button onClick={() => setPrice(Math.floor(price / 10))}>⌫</button>
+                                <button onClick={() => setPrice(0)}>Clear</button>
+                            </div>
+
                             <div className="popup-buttons">
-                                <button className="submit" onClick={confirmBet}>
-                                    Submit
-                                </button>
-                                <button className="cancel" onClick={cancelBet}>
-                                    Cancel
-                                </button>
+                                <button className="submit" onClick={confirmBet}>Submit</button>
+                                <button className="cancel" onClick={cancelBet}>Cancel</button>
                             </div>
                         </div>
                     </div>

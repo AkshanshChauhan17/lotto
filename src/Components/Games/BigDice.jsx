@@ -311,6 +311,20 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                                 <div className="input">${price} {price >= 10 && <span>${(price * 0.10).toFixed(1)}</span>}</div>
                                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
                             </div>
+
+                            <div className="number-pad">
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setPrice(Number(`${price}${num}`))}
+                                    >
+                                        {num}
+                                    </button>
+                                ))}
+                                <button onClick={() => setPrice(Math.floor(price / 10))}>⌫</button>
+                                <button onClick={() => setPrice(0)}>Clear</button>
+                            </div>
+
                             <div className="popup-buttons">
                                 <button className="submit" onClick={confirmBet}>Submit</button>
                                 <button className="cancel" onClick={cancelBet}>Cancel</button>
@@ -319,6 +333,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                     </div>
                 </div>
             )}
+
         </div>
     );
 }

@@ -309,7 +309,6 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
 
       {popup && <PopUpBlast />}
 
-      {/* PRICE POPUP */}
       {showPricePopup && (
         <div className="price-popup-overlay">
           <div className="price-popup">
@@ -317,9 +316,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
               <div className="title">Selected Numbers</div>
               <div className="numbers">
                 {selectedNumbers.map((e, i) => (
-                  <div className="number" key={i}>
-                    {e}
-                  </div>
+                  <div className="number" key={i}>{e}</div>
                 ))}
               </div>
             </div>
@@ -327,41 +324,34 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
               <div className="bet-meta">
                 <div className="bet-meta-time">
                   <LiveTime />
-                  <div className="bet-meta-tkt">
-                    TKT{Math.floor(Math.random() * 999999)}
-                  </div>
+                  <div className="bet-meta-tkt">TKT{Math.floor(Math.random() * 999999)}</div>
                 </div>
-                <div className="bet-meta-type">Big Five</div>
+                <div className="bet-meta-type">Lotto Dice</div>
               </div>
               <h3>Select Price</h3>
-              {price >= 10 && (
-                <div className="discount">
-                  <b>Hay!</b> you got <b>10% DISCOUNT</b>
-                </div>
-              )}
+              {price >= 10 && <div className="discount"><b>Hay!</b> you got <b>10% DISCOUNT</b></div>}
               <div className="bet-price-selection">
-                <button onClick={() => price > 1 && setPrice(price - 1)}>
-                  ${price - 1}
-                </button>
-                <div className="input">
-                  ${price}{" "}
-                  {price >= 10 && <span>${(price * 0.1).toFixed(1)}</span>}
-                </div>
-                <button
-                  onClick={() =>
-                    price < cdd.balance && setPrice(price + 1)
-                  }
-                >
-                  ${price + 1}
-                </button>
+                <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
+                <div className="input">${price} {price >= 10 && <span>${(price * 0.10).toFixed(1)}</span>}</div>
+                <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
               </div>
+
+              <div className="number-pad">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setPrice(Number(`${price}${num}`))}
+                  >
+                    {num}
+                  </button>
+                ))}
+                <button onClick={() => setPrice(Math.floor(price / 10))}>⌫</button>
+                <button onClick={() => setPrice(0)}>Clear</button>
+              </div>
+
               <div className="popup-buttons">
-                <button className="submit" onClick={confirmBet}>
-                  Submit
-                </button>
-                <button className="cancel" onClick={cancelBet}>
-                  Cancel
-                </button>
+                <button className="submit" onClick={confirmBet}>Submit</button>
+                <button className="cancel" onClick={cancelBet}>Cancel</button>
               </div>
             </div>
           </div>

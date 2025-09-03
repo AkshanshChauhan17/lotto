@@ -1278,3 +1278,19 @@ body {
     }
   }
 }
+
+.number-pad {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  cursor: pointer;
+  button {
+    background-color: white;
+    padding: 5px;
+    outline: 0px;
+    border: 0px;
+    box-shadow: inset 0px 0px 5px $gray-color;
+  }
+  button:active {
+    background-color: $gray-color;
+  }
+}

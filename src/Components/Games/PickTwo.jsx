@@ -112,7 +112,7 @@ export default function Pick2Game({
     return (
       <div className="number-row">
         {[...Array(10).keys()].map(() => (
-          <button></button>
+          <button className="num-btn">-</button>
         ))}
       </div>
     );
@@ -128,12 +128,36 @@ export default function Pick2Game({
             <div className="line-inputs card" key={idx}>
               <div className="lines">
                 <div className="num-section">
-                  <span className="label">Select Number 1</span>
+                  <span className="label">{l.number1 || l.number1 === 0 ? 1 : 0}/1</span>
                   {renderNumberRow(idx, "number1", l.number1)}
                 </div>
                 <div className="num-section">
-                  <span className="label">Select Number 2</span>
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                 <div className="num-section">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                 <div className="num-section">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                <div className="num-section">
+                  <span className="label">{l.number2 || l.number2 === 0 ? 1 : 0}/1</span>
                   {renderNumberRow(idx, "number2", l.number2)}
+                </div>
+                <div className="num-section">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                 <div className="num-section">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                 <div className="num-section">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
                 </div>
               </div>
 
