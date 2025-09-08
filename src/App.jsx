@@ -56,9 +56,7 @@ function App() {
     init();
   }, [updateNumber, nav]);
 
-  if (loading) {
-    return <div className="loader">Loading...</div>;
-  }
+
 
   if (!isLogin) {
     return (
