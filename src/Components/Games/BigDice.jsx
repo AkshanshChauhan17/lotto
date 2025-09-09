@@ -76,7 +76,31 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
             game_name,
             bet_type,
             numbers: [...selectedNumbers], // store numbers directly
-            amount: price
+            amount: price,
+            bonus: false,
+        };
+
+        setBets(prev => [...prev, newBet]);
+
+        setShowPricePopup(false);
+        setTempBetData(null);
+        setSelectedNumbers([]); // clear after adding
+    };
+
+     const confirmBetBon = () => {
+        if (!tempBetData) return;
+
+        const { game_name, bet_type } = tempBetData;
+
+        // ✅ Updated: No partition for C1
+        const newBet = {
+            date: new Date().toLocaleString("en-GB"),
+            ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+            game_name,
+            bet_type,
+            numbers: [...selectedNumbers], // store numbers directly
+            amount: parseFloat(cdd.bonus_amount),
+            bonus: true,
         };
 
         setBets(prev => [...prev, newBet]);
@@ -119,7 +143,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         setTimeout(() => {
             setPopup(false);
         }, 7000);
-    }
+    };
 
     const handleSubmit = () => {
         hS(openPop);
@@ -260,6 +284,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                                 </div>
                                 <div className="bet-right">
                                     <div className="left">${e.amount.toFixed(2)}</div>
+                                    {console.log(e)}
                                     {/* <div className="right">/${(e.amount * 7).toFixed(2)}</div> */}
                                 </div>
                                 <button className="delete" onClick={() => removeBet(i)}>
@@ -328,6 +353,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                             <div className="popup-buttons">
                                 <button className="submit" onClick={confirmBet}>Submit</button>
                                 <button className="cancel" onClick={cancelBet}>Cancel</button>
+                                { cdd?.bonus_amount > 0 && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button> }
                             </div>
                         </div>
                     </div>

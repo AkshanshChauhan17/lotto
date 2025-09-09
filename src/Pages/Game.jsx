@@ -27,13 +27,15 @@ export default function Game({ cd, upNum }) {
             "store_id": 1,
             "game_id": 1,
             "draw_id": null,
+            "staff_id": null,
             "lines": betss.map(item => ({
                 bet_type: item.bet_type,
                 numbers: item.numbers,
-                stake: item.amount
+                stake: item.amount,
+                bonus: item.bonus
             })),
             "total_stake": betss.reduce((sum, item) => sum + item.amount, 0),
-            "payment_method": "ACCOUNT_BALANCE"
+            "payment_method": "ACCOUNT_BALANCE",
         }, localStorage.token).then((e) => {
             oP();
             setBetss([]);
