@@ -4,6 +4,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { PiEmpty } from "react-icons/pi";
 import LiveTime from "../Time/LiveTime";
 import PopUpBlast from "../Animations/PopUpBlast";
+import { toast } from "react-toastify";
 
 function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => i + start);
@@ -22,21 +23,19 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         C2: { min: 2, max: 10 },
         C3: { min: 3, max: 10 },
         C4: { min: 4, max: 10 },
-        "C2+C3": { min: 5, max: 10 },
+        "C2+C3": { min: 3, max: 10 },
         BONUS: { min: 1, max: 1 },
-        JACKPOT: { min: 1, max: 1 }
+        JACKPOT: { min: 5, max: 5 }
     };
 
-    const autoSelect = () => {
+    const autoSelect = (count) => {
         const allNums = range(
             game_matrix[0].lotto_dice.clickable_numbers[0],
             game_matrix[0].lotto_dice.clickable_numbers[1]
         );
-
         const shuffled = allNums.sort(() => 0.5 - Math.random());
-        setSelectedNumbers(shuffled.slice(0, 10));
+        setSelectedNumbers(shuffled.slice(0, count));
     };
-
 
     const handleBetTypeClick = (game_name, bet_type) => {
         if (bets.length >= 10) {
@@ -63,19 +62,39 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         setShowPricePopup(true);
     };
 
-    // Confirm bet with price
     const confirmBet = () => {
         if (!tempBetData) return;
 
         const { game_name, bet_type } = tempBetData;
 
-        // ✅ Updated: No partition for C1
+        const lineCount = calculateLines(selectedNumbers, bet_type);
+
+        if (lineCount === 1 && price < 1) {
+            toast.error("For 1 line, minimum bet is $1");
+            return;
+        }
+
+        if (lineCount >= 3) {
+            let rawAmount = lineCount * 0.5;
+            let rounded = Math.ceil(rawAmount);
+
+            // enforce even number
+            if (rounded % 2 !== 0) {
+                rounded += 1;
+            }
+
+            if (price !== rounded) {
+                toast.error(`For ${lineCount} lines, price must be $${rounded}`);
+                return;
+            }
+        }
+
         const newBet = {
             date: new Date().toLocaleString("en-GB"),
             ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
             game_name,
             bet_type,
-            numbers: [...selectedNumbers], // store numbers directly
+            numbers: [...selectedNumbers],
             amount: price,
             bonus: false,
         };
@@ -84,22 +103,43 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
 
         setShowPricePopup(false);
         setTempBetData(null);
-        setSelectedNumbers([]); // clear after adding
+        setSelectedNumbers([]);
     };
 
-     const confirmBetBon = () => {
+    const confirmBetBon = () => {
         if (!tempBetData) return;
 
         const { game_name, bet_type } = tempBetData;
+        const lineCount = calculateLines(selectedNumbers, bet_type);
+        const bonusAmount = parseFloat(cdd.bonus_amount);
 
-        // ✅ Updated: No partition for C1
+        // ✅ Rule checks
+        if (lineCount === 1 && bonusAmount < 1) {
+            toast.error("For 1 line, minimum bet is $1");
+            return;
+        }
+
+        if (lineCount >= 3) {
+            let rawAmount = lineCount * 0.5;
+            let rounded = Math.ceil(rawAmount);
+
+            if (rounded % 2 !== 0) {
+                rounded += 1;
+            }
+
+            if (bonusAmount !== rounded) {
+                toast.error(`For ${lineCount} lines, bonus must be $${rounded}`);
+                return;
+            }
+        }
+
         const newBet = {
             date: new Date().toLocaleString("en-GB"),
             ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
             game_name,
             bet_type,
-            numbers: [...selectedNumbers], // store numbers directly
-            amount: parseFloat(cdd.bonus_amount),
+            numbers: [...selectedNumbers],
+            amount: bonusAmount,
             bonus: true,
         };
 
@@ -107,7 +147,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
 
         setShowPricePopup(false);
         setTempBetData(null);
-        setSelectedNumbers([]); // clear after adding
+        setSelectedNumbers([]);
     };
 
     // Cancel bet creation
@@ -183,7 +223,15 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         }
     }
 
-    console.log(bets)
+    // Discount rules mapping [this is dummy we just make it call from api]
+    const discountRules = {
+        C1: 0.10,     // 10%
+        C2: 0.10,
+        C3: 0.20,     // 20%
+        BONUS: 0.10,
+        C4: 0.00,     // no discount
+        "C2+C3": 0.15 // 15% for example
+    };
 
     return (
         <div className="game-inner">
@@ -191,7 +239,17 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 <div className="left-top">
                     <div className="head">
                         <div className="smt">Choose any number</div>
-                        <button style={{ padding: "2px 10px" }} onClick={() => autoSelect()}>Auto Pick 10</button>
+                        <div className="auto-pick-buttons">
+                            {[3, 5, 7, 10].map((count) => (
+                                <button
+                                    key={count}
+                                    style={{ padding: "2px 10px", marginRight: "5px" }}
+                                    onClick={() => autoSelect(count)}
+                                >
+                                    Auto Pick {count}
+                                </button>
+                            ))}
+                        </div>
                         <div className="smt">{selectedNumbers.length}/10</div>
                     </div>
                     <div className="left-matrix">
@@ -330,10 +388,10 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                                 <div className="bet-meta-type">Lotto Dice</div>
                             </div>
                             <h3>Select Price</h3>
-                            {price >= 10 && <div className="discount"><b>Hay!</b> you got <b>10% DISCOUNT</b></div>}
+                            {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(price * discountRules[tempBetData.bet_type]).toFixed(2)}% DISCOUNT</b></div>}
                             <div className="bet-price-selection">
                                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
-                                <div className="input">${price} {price >= 10 && <span>${(price * 0.10).toFixed(1)}</span>}</div>
+                                <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
                                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
                             </div>
 
@@ -353,7 +411,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                             <div className="popup-buttons">
                                 <button className="submit" onClick={confirmBet}>Submit</button>
                                 <button className="cancel" onClick={cancelBet}>Cancel</button>
-                                { cdd?.bonus_amount > 0 && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button> }
+                                {cdd?.bonus_amount > 0 && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
                             </div>
                         </div>
                     </div>

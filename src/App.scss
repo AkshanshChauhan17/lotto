@@ -1130,6 +1130,184 @@ body {
   }
 }
 
+.pick3-root {
+  max-width: 100% !important;
+  margin: 20px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+
+  .pick3-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+
+    .line-inputs {
+      display: grid;
+      grid-template-columns: auto;
+      .lines {
+        display: flex;
+        gap: 40px;
+      }
+    }
+  }
+
+  .card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .num-section {
+    margin-bottom: 20px;
+
+    .label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #444;
+    }
+  }
+
+  .number-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .num-btn {
+    width: 50px;
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    box-shadow: inset 0 0 0 2px transparent;
+
+    &:hover {
+      background: #e2e6ea;
+    }
+
+    &.selected {
+      background: #007bff;
+      color: #fff;
+      box-shadow: inset 0 0 0 2px #0056b3;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    gap: 10px;
+
+    select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  .btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease-in-out;
+
+    &.primary {
+      background: #28a745;
+      color: #fff;
+
+      &:hover {
+        background: #218838;
+      }
+    }
+
+    &.danger {
+      background: #dc3545;
+      color: #fff;
+
+      &:hover {
+        background: #b02a37;
+      }
+    }
+
+    &.add {
+      background: #007bff;
+      color: #fff;
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+
+    &.auto {
+      background: #ffc107;
+      color: #212529;
+
+      &:hover {
+        background: #e0a800;
+      }
+    }
+  }
+
+  .summary {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #333;
+  }
+
+  .rules {
+    margin-top: 24px;
+
+    ul {
+      padding-left: 20px;
+
+      li {
+        margin-bottom: 6px;
+      }
+    }
+  }
+
+  .message {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+
+    &.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    &.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  }
+}
+
+
 .history-root {
   padding: 20px;
 
@@ -1292,5 +1470,2104 @@ body {
   }
   button:active {
     background-color: $gray-color;
+  }
+}
+
+// Mobile-first approach with breakpoints
+$mobile-sm: 320px;
+$mobile-md: 375px;
+$mobile-lg: 414px;
+$tablet: 768px;
+$desktop: 1024px;
+
+// Mobile-optimized mixins
+@mixin mobile-only {
+  @media (max-width: #{$tablet - 1px}) {
+    @content;
+  }
+}
+
+@mixin mobile-sm {
+  @media (max-width: #{$mobile-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin desktop-up {
+  @media (min-width: $desktop) {
+    @content;
+  }
+}
+
+// Touch-friendly button mixin
+@mixin touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px;
+}
+
+body {
+  background-color: $gray-color;
+  
+  @include mobile-only {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.solid-black-bg {
+  background-color: #2F3034;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  padding: 15px 40px;
+
+  @include mobile-only {
+    padding: 10px 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .links {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+
+    @include mobile-only {
+      gap: 15px;
+      flex-wrap: wrap;
+      order: 3;
+      width: 100%;
+      justify-content: center;
+    }
+
+    @include mobile-sm {
+      gap: 10px;
+    }
+
+    .link {
+      color: white;
+      text-decoration: none;
+      @extend .f-l;
+      
+      @include mobile-only {
+        @include touch-target;
+        font-size: 14px;
+        text-align: center;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    @include mobile-only {
+      gap: 8px;
+      order: 2;
+    }
+
+    .total-balance {
+      @extend .f-xl;
+      
+      @include mobile-only {
+        font-size: 16px;
+      }
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border-radius: 50px;
+      padding: 8px;
+      
+      @include mobile-only {
+        @include touch-target;
+      }
+    }
+  }
+}
+
+.game {
+  padding: 40px;
+  background-color: $gray-color;
+  background-position: center;
+  background-size: 300px;
+  min-height: calc(100vh - 180px);
+
+  @include mobile-only {
+    padding: 15px;
+    min-height: calc(100vh - 120px);
+    background-size: 200px;
+  }
+
+  .game-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @include mobile-only {
+      flex-direction: column;
+      gap: 15px;
+      align-items: stretch;
+    }
+
+    .left {
+      min-width: 150px;
+
+      @include mobile-only {
+        min-width: auto;
+        text-align: center;
+      }
+
+      .game-type {
+        @extend .f-sm-blue;
+        
+        @include mobile-only {
+          font-size: 12px;
+        }
+      }
+
+      .game-name {
+        @extend .f-xxl;
+        
+        @include mobile-only {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .links {
+      display: flex;
+      gap: 40px;
+      padding: 10px 10px;
+      border-radius: 20px;
+      align-items: center;
+      @extend .bg-shade-one;
+
+      @include mobile-only {
+        gap: 10px;
+        padding: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      @include mobile-sm {
+        gap: 5px;
+        padding: 5px;
+      }
+
+      .link {
+        @extend .game-links;
+        
+        @include mobile-only {
+          @include touch-target;
+          font-size: 12px;
+        }
+      }
+
+      .link:first-child {
+        margin-left: 30px;
+        
+        @include mobile-only {
+          margin-left: 10px;
+        }
+      }
+
+      .link:last-child {
+        margin-right: 30px;
+        
+        @include mobile-only {
+          margin-right: 10px;
+        }
+      }
+
+      .selected-link {
+        padding: 10px 20px;
+        background-color: $gray-color;
+        border-radius: 10px;
+        @extend .f-lt;
+        min-width: 60px;
+        text-align: center;
+        
+        @include mobile-only {
+          padding: 8px 12px;
+          min-width: 50px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .right {
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      flex-direction: column;
+      gap: 10px;
+
+      @include mobile-only {
+        align-items: center;
+        justify-content: center;
+      }
+
+      .title {
+        @extend .f-smt;
+        
+        @include mobile-only {
+          font-size: 14px;
+        }
+      }
+
+      .time-ar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        @include mobile-only {
+          gap: 5px;
+        }
+
+        .time-hr,
+        .time-mi,
+        .time-se {
+          padding: 20px;
+          background-color: $bg-color;
+          padding: 10px;
+          display: flex;
+          color: $text-white;
+          @extend .f-l;
+          display: flex;
+          align-items: end;
+          width: 30px;
+          justify-content: center;
+          border-radius: 10px;
+
+          @include mobile-only {
+            padding: 8px;
+            width: 25px;
+            font-size: 12px;
+          }
+
+          .text {
+            @extend .f-xsm;
+            
+            @include mobile-only {
+              font-size: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.game-inner {
+  display: flex;
+  padding-top: 40px;
+  gap: 40px;
+
+  @include mobile-only {
+    flex-direction: column;
+    padding-top: 20px;
+    gap: 20px;
+  }
+
+  .left {
+    display: grid;
+    gap: 30px;
+
+    @include mobile-only {
+      gap: 15px;
+    }
+
+    .left-top {
+      .head {
+        margin-bottom: 10px;
+        @extend .f-smt-b;
+        display: flex;
+        justify-content: space-between;
+        
+        @include mobile-only {
+          font-size: 14px;
+          flex-wrap: wrap;
+          gap: 5px;
+        }
+      }
+
+      .left-matrix {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 10px;
+        padding: 30px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.10);
+        border-radius: $card-radius;
+        background-color: $text-white;
+
+        @include mobile-only {
+          grid-template-columns: repeat(5, 1fr);
+          gap: 8px;
+          padding: 15px;
+        }
+
+        @include mobile-sm {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 5px;
+          padding: 10px;
+        }
+
+        .matrix-selector {
+          padding: 10px;
+          aspect-ratio: 1;
+          @extend .f-ll;
+          border-radius: 10px;
+          outline: 0px;
+          border: 0px;
+          box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
+          
+          @include mobile-only {
+            @include touch-target;
+            padding: 8px;
+            font-size: 12px;
+          }
+
+          @include mobile-sm {
+            padding: 6px;
+            font-size: 10px;
+          }
+        }
+
+        .matrix-selector:disabled {
+          opacity: 0 !important;
+        }
+      }
+    }
+
+    .left-bottom {
+      .head {
+        margin-bottom: 10px;
+        @extend .f-smt-b;
+        display: flex;
+        justify-content: space-between;
+        
+        @include mobile-only {
+          font-size: 14px;
+          flex-wrap: wrap;
+          gap: 5px;
+        }
+      }
+
+      .controller {
+        background-color: $text-white;
+        padding: 20px;
+        display: grid;
+        gap: 10px;
+        border-radius: $card-radius;
+
+        @include mobile-only {
+          padding: 15px;
+          gap: 8px;
+        }
+
+        .left-controllers-row-one {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 10px;
+
+          @include mobile-only {
+            gap: 8px;
+          }
+
+          @include mobile-sm {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+          }
+
+          .left-controller {
+            padding: 5px;
+            @extend .f-ll;
+            border-radius: 10px;
+            outline: 0px;
+            border: 0px;
+            background-color: $bg-color;
+            color: $text-white;
+            
+            @include mobile-only {
+              @include touch-target;
+              font-size: 12px;
+            }
+          }
+
+          .left-controller:nth-child(1) {
+            border: 1px solid $bg-color;
+            background-color: $text-white;
+            color: $bg-color;
+          }
+        }
+
+        .left-controllers-row-two {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+
+          @include mobile-only {
+            gap: 8px;
+          }
+
+          @include mobile-sm {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+          }
+
+          .left-controller {
+            padding: 5px;
+            @extend .f-ll;
+            border-radius: 10px;
+            outline: 0px;
+            border: 0px;
+            cursor: pointer;
+            
+            @include mobile-only {
+              @include touch-target;
+              font-size: 12px;
+            }
+          }
+
+          .left-controller:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
+          .left-controller:nth-child(2) {
+            border: 1px solid $bg-color;
+            background-color: $text-white;
+            color: $bg-color;
+          }
+
+          .left-controller:nth-child(1) {
+            background-color: $bg-color;
+            color: $text-white;
+          }
+        }
+      }
+    }
+  }
+
+  .right {
+    flex: 1;
+
+    .discount {
+      background-color: $yellow;
+      border: 2px solid black;
+      padding: 8px;
+      text-align: center;
+      @extend .f-smt;
+      
+      @include mobile-only {
+        padding: 6px;
+        font-size: 12px;
+      }
+    }
+
+    .head {
+      margin-bottom: 10px;
+      @extend .f-smt-b;
+      display: flex;
+      justify-content: space-between;
+      
+      @include mobile-only {
+        font-size: 14px;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+    }
+
+    .selected-cart {
+      padding: 30px;
+      background-color: $text-white;
+      border-radius: $card-radius;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: scroll;
+      box-shadow: inset -10px -40px 40px rgba(0, 0, 0, 0.2);
+      height: 400px;
+
+      @include mobile-only {
+        padding: 15px;
+        gap: 15px;
+        height: 300px;
+      }
+
+      .empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100%;
+        gap: 20px;
+        @extend .f-xl;
+        opacity: 0.6;
+
+        @include mobile-only {
+          gap: 15px;
+          font-size: 16px;
+        }
+
+        .empty-icon {
+          font-size: 100px;
+          opacity: 0.2;
+          
+          @include mobile-only {
+            font-size: 60px;
+          }
+        }
+      }
+
+      .bet-ar {
+        padding-bottom: 20px;
+        border-bottom: 1px solid $line-color;
+        
+        @include mobile-only {
+          padding-bottom: 15px;
+        }
+        
+        .bet {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-bottom: 10px;
+
+          @include mobile-only {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            padding-bottom: 15px;
+          }
+
+          .bet-left {
+            @include mobile-only {
+              order: 1;
+            }
+            
+            .top {
+              @extend .f-date;
+              
+              @include mobile-only {
+                font-size: 12px;
+              }
+            }
+
+            .bottom {
+              @extend .f-tkt;
+              
+              @include mobile-only {
+                font-size: 14px;
+              }
+            }
+          }
+
+          .bet-middle {
+            @include mobile-only {
+              order: 2;
+            }
+            
+            .top {
+              @extend .f-g-name;
+              
+              @include mobile-only {
+                font-size: 14px;
+              }
+            }
+
+            .bottom {
+              display: flex;
+              align-items: baseline;
+
+              .b-left {
+                @extend .f-type;
+                
+                @include mobile-only {
+                  font-size: 12px;
+                }
+              }
+
+              .b-right {
+                @extend .f-type-two;
+                
+                @include mobile-only {
+                  font-size: 12px;
+                }
+              }
+            }
+          }
+
+          .bet-right {
+            display: flex;
+            align-items: baseline;
+
+            @include mobile-only {
+              order: 3;
+              justify-content: space-between;
+            }
+
+            .left {
+              @extend .f-amount;
+              
+              @include mobile-only {
+                font-size: 16px;
+              }
+            }
+
+            .right {
+              @extend .f-amount-two;
+              
+              @include mobile-only {
+                font-size: 14px;
+              }
+            }
+          }
+
+          .delete {
+            padding: 10px;
+            background-color: $bg-red;
+            border: 0px;
+            outline: 0px;
+            color: $text-white;
+            border-radius: $button-radius;
+            @extend .f-l;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            @include mobile-only {
+              @include touch-target;
+              order: 4;
+              align-self: center;
+              margin-top: 10px;
+            }
+          }
+        }
+      }
+
+      .bet:last-child {
+        border-bottom: 0px solid $line-color;
+      }
+    }
+
+    .selected-controls {
+      margin-top: 20px;
+      border-radius: $card-radius;
+      display: flex;
+      gap: 20px;
+
+      @include mobile-only {
+        gap: 10px;
+        flex-direction: column;
+      }
+
+      .clear {
+        padding: 10px 20px;
+        @extend .f-ll;
+        border: 1px solid $bg-red;
+        color: $bg-red;
+        outline: 0px;
+        border-radius: $button-radius;
+        width: 100%;
+        
+        @include mobile-only {
+          @include touch-target;
+        }
+      }
+
+      .submit {
+        padding: 10px 20px;
+        width: 100%;
+        @extend .f-ll;
+        background-color: $bg-green;
+        color: $text-white;
+        border: 0px;
+        outline: 0px;
+        border-radius: $button-radius;
+        
+        @include mobile-only {
+          @include touch-target;
+        }
+      }
+    }
+  }
+}
+
+.bottom-numbers {
+  display: flex;
+  @extend .f-xsm;
+  gap: 10px;
+  
+  @include mobile-only {
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 12px;
+  }
+  
+  .b-numbers {
+    font-weight: 600;
+  }
+}
+
+.register {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: calc(100vw - 80px);
+  height: calc(100vh - 80px);
+  background-color: $gray-color;
+  align-items: center;
+  justify-content: center;
+
+  @include mobile-only {
+    padding: 20px;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 40px);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    background-color: $text-white;
+    padding: 40px;
+    border-radius: $card-radius;
+    width: 300px;
+    height: fit-content;
+
+    @include mobile-only {
+      padding: 20px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      
+      @include mobile-only {
+        gap: 8px;
+      }
+    }
+
+    button,
+    input {
+      padding: 10px;
+      border-radius: $button-radius;
+      border: 0px;
+      outline: 0px;
+      background-color: $gray-color;
+      
+      @include mobile-only {
+        @include touch-target;
+        font-size: 16px; // Prevents zoom on iOS
+      }
+    }
+
+    button {
+      background-color: $bg-green;
+      color: $text-white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}
+
+.login {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: calc(100vw - 80px);
+  height: calc(100vh - 80px);
+  background-color: $gray-color;
+  align-items: center;
+  justify-content: center;
+
+  @include mobile-only {
+    padding: 20px;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 40px);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    background-color: $text-white;
+    padding: 40px;
+    border-radius: $card-radius;
+    width: 300px;
+    height: fit-content;
+
+    @include mobile-only {
+      padding: 20px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      
+      @include mobile-only {
+        gap: 8px;
+      }
+    }
+
+    button,
+    input {
+      padding: 10px;
+      border-radius: $button-radius;
+      border: 0px;
+      outline: 0px;
+      background-color: $gray-color;
+      
+      @include mobile-only {
+        @include touch-target;
+        font-size: 16px; // Prevents zoom on iOS
+      }
+    }
+
+    button {
+      background-color: $bg-green;
+      color: $text-white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}
+
+.price-popup-overlay {
+  width: 100vw;
+  height: 100vh;
+  background-color: $bg-color;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+
+  @include mobile-only {
+    padding: 10px;
+  }
+
+  .price-popup {
+    background-color: $text-white;
+    display: flex;
+    padding: 40px;
+    border-radius: $card-radius;
+    gap: 40px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    @include mobile-only {
+      flex-direction: column;
+      padding: 20px;
+      gap: 20px;
+      width: 100%;
+      max-width: none;
+    }
+
+    .left {
+      max-width: 300px;
+      border-right: 1px solid gray;
+      padding-right: 40px;
+      display: flex;
+      flex-direction: column;
+
+      @include mobile-only {
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid gray;
+        padding-right: 0;
+        padding-bottom: 20px;
+      }
+
+      .title {
+        @extend .f-xl;
+        
+        @include mobile-only {
+          font-size: 18px;
+          text-align: center;
+        }
+      }
+
+      .numbers {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+
+        @include mobile-only {
+          gap: 8px;
+          justify-content: center;
+        }
+
+        .number {
+          padding: 10px 16px;
+          aspect-ratio: 1;
+          @extend .f-ll;
+          background-color: #1CA5FB;
+          color: $text-white;
+          border-radius: 10px;
+          outline: 0px;
+          border: 0px;
+          height: fit-content;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
+          
+          @include mobile-only {
+            @include touch-target;
+            padding: 8px 12px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .right {
+      display: grid;
+      gap: 20px;
+      align-content: start;
+      align-items: start;
+
+      @include mobile-only {
+        gap: 15px;
+      }
+
+      .bet-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 40px;
+
+        @include mobile-only {
+          flex-direction: column;
+          gap: 10px;
+          text-align: center;
+        }
+
+        .bet-meta-time {
+          @extend .f-smt;
+
+          @include mobile-only {
+            font-size: 14px;
+          }
+
+          .bet-meta-tkt {
+            @extend .f-xl;
+            
+            @include mobile-only {
+              font-size: 18px;
+            }
+          }
+        }
+
+        .bet-meta-type {
+          @extend .f-xxl;
+          
+          @include mobile-only {
+            font-size: 20px;
+          }
+        }
+      }
+
+      h3 {
+        @extend .f-l;
+        margin-top: 10px;
+        
+        @include mobile-only {
+          font-size: 16px;
+          margin-top: 5px;
+        }
+      }
+
+      .bet-price-selection {
+        display: flex;
+        gap: 10px;
+
+        @include mobile-only {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        button,
+        .input {
+          padding: 10px;
+          border: 0px;
+          outline: 0px;
+          @extend .f-xl;
+          border-radius: $button-radius;
+          
+          @include mobile-only {
+            @include touch-target;
+            font-size: 16px;
+          }
+        }
+
+        .input {
+          box-shadow: inset 0px 10px 10px rgba(0, 0, 0, 0.2);
+          width: 200px;
+          text-align: center;
+          position: relative;
+
+          @include mobile-only {
+            width: 100%;
+          }
+
+          span {
+            background-color: $yellow;
+            padding: 10px;
+            outline: 1px solid black;
+            border-radius: $button-radius;
+            position: absolute;
+            top: 0;
+            right: 0;
+            
+            @include mobile-only {
+              padding: 8px;
+              font-size: 12px;
+            }
+          }
+        }
+
+        button {
+          min-width: 70px;
+          cursor: pointer;
+          outline: 1px solid rgb(206, 206, 206);
+          
+          @include mobile-only {
+            min-width: auto;
+          }
+        }
+      }
+
+      .popup-buttons {
+        display: flex;
+        gap: 10px;
+
+        @include mobile-only {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        button {
+          padding: 10px;
+          border: 0px;
+          outline: 0px;
+          @extend .f-l;
+          width: 100%;
+          cursor: pointer;
+          
+          @include mobile-only {
+            @include touch-target;
+          }
+        }
+
+        .submit {
+          background: $bg-green;
+          color: $text-white;
+          border-radius: $button-radius;
+        }
+
+        .cancel {
+          background: $bg-red;
+          color: $text-white;
+          border-radius: $button-radius;
+        }
+      }
+    }
+  }
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  @include mobile-only {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+
+    @include mobile-only {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    select {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      
+      @include mobile-only {
+        @include touch-target;
+        flex: 1;
+        min-width: 120px;
+      }
+    }
+
+    .reload-btn {
+      padding: 6px 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      @include mobile-only {
+        @include touch-target;
+        flex: 1;
+      }
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+  }
+}
+
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+
+  @include mobile-only {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #eee;
+
+    @include mobile-only {
+      padding: 8px 6px;
+      font-size: 12px;
+    }
+  }
+
+  th {
+    background: #fafafa;
+    font-weight: 600;
+    color: #444;
+    cursor: pointer;
+
+    &:hover {
+      background: #f0f4ff;
+    }
+  }
+
+  tbody tr {
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #f4f8ff;
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    
+    @include mobile-only {
+      padding: 15px;
+    }
+  }
+}
+
+.popup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  box-sizing: border-box;
+
+  @include mobile-only {
+    padding: 10px;
+  }
+}
+
+.tickets-table-container {
+  padding: 20px;
+  background: #f9f9fb;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+
+  @include mobile-only {
+    padding: 15px;
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+}
+
+.table-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #222;
+
+  @include mobile-only {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+}
+
+.status {
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.pending {
+    color: #e69500;
+  }
+
+  &.void {
+    color: #d9534f;
+  }
+
+  &.completed {
+    color: #28a745;
+  }
+
+  &.won {
+    color: #28a745;
+  }
+
+  &.lost {
+    color: #d9534f;
+  }
+}
+
+.luck-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 3000;
+  padding: 20px;
+  box-sizing: border-box;
+
+  @include mobile-only {
+    padding: 15px;
+  }
+}
+
+.luck-card {
+  background: linear-gradient(135deg, #28a745, #45d98c);
+  padding: 40px 60px;
+  border-radius: 16px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.5s ease forwards;
+  position: relative;
+  max-width: 90vw;
+
+  @include mobile-only {
+    padding: 30px 20px;
+    max-width: 95vw;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin: 10px 0;
+
+    @include mobile-only {
+      font-size: 1.5rem;
+    }
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin: 0;
+
+    @include mobile-only {
+      font-size: 1rem;
+    }
+  }
+
+  .countdown {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 500;
+
+    @include mobile-only {
+      font-size: 0.85rem;
+      padding: 4px 12px;
+    }
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 20px;
+  box-sizing: border-box;
+
+  @include mobile-only {
+    padding: 10px;
+  }
+}
+
+.modal-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+
+  @include mobile-only {
+    width: 100%;
+    max-width: 95vw;
+    padding: 20px;
+    max-height: 95vh;
+  }
+
+  h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+
+    @include mobile-only {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+    }
+  }
+
+  h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #444;
+
+    @include mobile-only {
+      font-size: 1.1rem;
+      margin-top: 15px;
+    }
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+
+  @include mobile-only {
+    @include touch-target;
+    top: 5px;
+    right: 5px;
+  }
+
+  &:hover {
+    color: #000;
+  }
+}
+
+.ticket-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin-bottom: 20px;
+
+  @include mobile-only {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+
+    @include mobile-only {
+      font-size: 0.9rem;
+    }
+
+    strong {
+      color: #222;
+    }
+  }
+}
+
+.lines {
+  display: grid;
+  gap: 12px;
+
+  @include mobile-only {
+    gap: 8px;
+  }
+
+  .line-card {
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: #fafafa;
+    display: flex;
+    justify-content: space-between;
+
+    @include mobile-only {
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    p {
+      margin: 2px 0;
+      font-size: 0.9rem;
+
+      @include mobile-only {
+        font-size: 0.85rem;
+      }
+    }
+
+    .line {}
+
+    .qr {
+      display: grid;
+
+      .print-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+
+        @include mobile-only {
+          @include touch-target;
+        }
+      }
+    }
+  }
+}
+
+.pick2-root {
+  max-width: 100% !important;
+  margin: 20px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+
+  @include mobile-only {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+
+    @include mobile-only {
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+  }
+
+  .pick2-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+
+    @include mobile-only {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .line-inputs {
+      display: grid;
+      grid-template-columns: auto;
+      
+      .lines {
+        display: flex;
+        gap: 40px;
+
+        @include mobile-only {
+          flex-direction: column;
+          gap: 15px;
+        }
+      }
+    }
+  }
+
+  .card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    @include mobile-only {
+      padding: 12px;
+    }
+  }
+
+  .num-section {
+    margin-bottom: 20px;
+
+    @include mobile-only {
+      margin-bottom: 15px;
+    }
+
+    .label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #444;
+
+      @include mobile-only {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .number-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: nowrap;
+
+    @include mobile-only {
+      gap: 4px;
+    }
+  }
+
+  .num-btn {
+    width: 50px;
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    box-shadow: inset 0 0 0 2px transparent;
+
+    @include mobile-only {
+      @include touch-target;
+      width: auto;
+      font-size: 14px;
+    }
+
+    &:hover {
+      background: #e2e6ea;
+    }
+
+    &.selected {
+      background: #007bff;
+      color: #fff;
+      box-shadow: inset 0 0 0 2px #0056b3;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    gap: 10px;
+
+    @include mobile-only {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+
+      @include mobile-only {
+        @include touch-target;
+      }
+    }
+  }
+
+  .btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease-in-out;
+
+    @include mobile-only {
+      @include touch-target;
+    }
+
+    &.primary {
+      background: #28a745;
+      color: #fff;
+
+      &:hover {
+        background: #218838;
+      }
+    }
+
+    &.danger {
+      background: #dc3545;
+      color: #fff;
+
+      &:hover {
+        background: #b02a37;
+      }
+    }
+
+    &.add {
+      background: #007bff;
+      color: #fff;
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+
+    &.auto {
+      background: #ffc107;
+      color: #212529;
+
+      &:hover {
+        background: #e0a800;
+      }
+    }
+  }
+
+  .summary {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #333;
+
+    @include mobile-only {
+      font-size: 16px;
+    }
+  }
+
+  .rules {
+    margin-top: 24px;
+
+    @include mobile-only {
+      margin-top: 20px;
+    }
+
+    ul {
+      padding-left: 20px;
+
+      @include mobile-only {
+        padding-left: 15px;
+      }
+
+      li {
+        margin-bottom: 6px;
+
+        @include mobile-only {
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+
+  .message {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+
+    @include mobile-only {
+      margin-top: 12px;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    &.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    &.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  }
+}
+
+.history-root {
+  padding: 20px;
+
+  @include mobile-only {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #333;
+
+    @include mobile-only {
+      font-size: 1.4rem;
+      text-align: center;
+    }
+  }
+
+  .loader,
+  .empty,
+  .message {
+    padding: 12px;
+    text-align: center;
+    border-radius: 10px;
+    margin: 12px 0;
+    font-size: 0.95rem;
+
+    @include mobile-only {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+  }
+
+  .message.error {
+    background: #ffe5e5;
+    color: #d9534f;
+  }
+
+  .empty {
+    background: #f8f9fa;
+    color: #777;
+  }
+
+  .history-table {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    overflow-x: auto;
+
+    @include mobile-only {
+      padding: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+
+      @include mobile-only {
+        min-width: 500px;
+      }
+
+      th {
+        text-align: left;
+        padding: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #555;
+        border-bottom: 2px solid #eee;
+
+        @include mobile-only {
+          padding: 8px 4px;
+          font-size: 0.8rem;
+        }
+      }
+
+      td {
+        padding: 10px;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #f1f1f1;
+
+        @include mobile-only {
+          padding: 8px 4px;
+          font-size: 0.8rem;
+        }
+      }
+
+      tr:hover {
+        background: #fafafa;
+      }
+
+      .status {
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: capitalize;
+
+        @include mobile-only {
+          padding: 2px 6px;
+          font-size: 0.7rem;
+        }
+
+        &.pending {
+          background: #fff3cd;
+          color: #856404;
+        }
+
+        &.won {
+          background: #d4edda;
+          color: #155724;
+        }
+
+        &.lost {
+          background: #f8d7da;
+          color: #721c24;
+        }
+      }
+    }
+  }
+}
+
+.locations-root {
+  padding: 20px;
+
+  @include mobile-only {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+
+    @include mobile-only {
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  }
+
+  .location-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+
+    @include mobile-only {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+  }
+
+  .location-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    @include mobile-only {
+      padding: 15px;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2c3e50;
+
+      @include mobile-only {
+        font-size: 1.1rem;
+      }
+    }
+
+    p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      color: #555;
+
+      @include mobile-only {
+        font-size: 0.85rem;
+      }
+    }
+
+    .address {
+      font-style: italic;
+      color: #666;
+    }
+
+    .map-btn {
+      margin-top: 12px;
+      padding: 8px 14px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      @include mobile-only {
+        @include touch-target;
+        width: 100%;
+      }
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+      @include mobile-only {
+        transform: none; // Disable hover effects on mobile
+      }
+    }
+  }
+}
+
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  cursor: pointer;
+  gap: 2px;
+
+  @include mobile-only {
+    gap: 1px;
+  }
+  
+  button {
+    background-color: white;
+    padding: 5px;
+    outline: 0px;
+    border: 0px;
+    box-shadow: inset 0px 0px 5px $gray-color;
+
+    @include mobile-only {
+      @include touch-target;
+      font-size: 16px;
+    }
+  }
+  
+  button:active {
+    background-color: $gray-color;
+  }
+}
+
+// Additional mobile-specific optimizations
+@include mobile-only {
+  // Prevent horizontal scrolling
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  // Improve touch scrolling
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  // Optimize for safe areas (iPhone X+)
+  @supports (padding: max(0px)) {
+    .nav {
+      padding-left: max(15px, env(safe-area-inset-left));
+      padding-right: max(15px, env(safe-area-inset-right));
+    }
+
+    .game {
+      padding-left: max(15px, env(safe-area-inset-left));
+      padding-right: max(15px, env(safe-area-inset-right));
+    }
+  }
+}
+
+// High DPI displays optimization
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .matrix-selector,
+  .left-controller,
+  .num-btn {
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
   }
 }

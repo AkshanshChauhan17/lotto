@@ -12,6 +12,8 @@ import TicketsTable from "./Components/Tables/Tickets";
 import GameHistory from "./Components/Tables/History";
 import Locations from "./Components/Games/Location";
 import UserDetails from "./Components/User/UserInfo";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -56,8 +58,6 @@ function App() {
     init();
   }, [updateNumber, nav]);
 
-
-
   if (!isLogin) {
     return (
       <Routes>
@@ -71,6 +71,7 @@ function App() {
   return (
     <div className="main">
       <Navigation cud={customerDetails} />
+      <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         <Route path="/popup" element={<PopUpBlast />} />
         <Route path="/login" element={<Navigate to="/" />} />

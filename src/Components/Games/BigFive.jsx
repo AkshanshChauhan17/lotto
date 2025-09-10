@@ -22,20 +22,20 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
     C2: { min: 2, max: 10 },
     C3: { min: 3, max: 10 },
     C4: { min: 4, max: 10 },
-    "C2+C3": { min: 5, max: 10 },
+    "C2+C3": { min: 3, max: 10 },
     PICK2: { min: 2, max: 10 },
     PICK3: { min: 3, max: 10 },
     BONUS: { min: 1, max: 1 },
-    JACKPOT: { min: 1, max: 1 }
+    JACKPOT: { min: 5, max: 5 }
   };
 
-  const autoSelect = () => {
+  const autoSelect = (count) => {
     const allNums = range(
       game_matrix[3].lotto_five.clickable_numbers[0],
       game_matrix[3].lotto_five.clickable_numbers[1]
     );
     const shuffled = allNums.sort(() => 0.5 - Math.random());
-    setSelectedNumbers(shuffled.slice(0, 10));
+    setSelectedNumbers(shuffled.slice(0, count));
   };
 
   const handleBetTypeClick = (game_name, bet_type) => {
@@ -68,7 +68,30 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
 
   const confirmBet = () => {
     if (!tempBetData) return;
+
     const { game_name, bet_type } = tempBetData;
+
+    // Calculate how many lines this bet produces
+    const lineCount = calculateLines(selectedNumbers, bet_type);
+
+    let finalAmount = price;
+
+    // ✅ Apply custom rules
+    if (lineCount === 1) {
+      finalAmount = Math.max(price, 1); // At least $1
+    } else if (lineCount >= 3) {
+      let rawAmount = lineCount * 0.5;
+
+      // Round UP to nearest whole number
+      rawAmount = Math.ceil(rawAmount);
+
+      // Ensure even number
+      if (rawAmount % 2 !== 0) {
+        rawAmount += 1;
+      }
+
+      finalAmount = rawAmount;
+    }
 
     const newBet = {
       date: new Date().toLocaleString("en-GB"),
@@ -76,14 +99,59 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
       game_name,
       bet_type,
       numbers: [...selectedNumbers],
-      amount: price
+      amount: finalAmount,
+      bonus: false,
     };
 
-    setBets((prev) => [...prev, newBet]);
+    setBets(prev => [...prev, newBet]);
+
     setShowPricePopup(false);
     setTempBetData(null);
     setSelectedNumbers([]);
   };
+
+  const confirmBetBon = () => {
+    if (!tempBetData) return;
+
+    const { game_name, bet_type } = tempBetData;
+
+    // Calculate how many lines this bet produces
+    const lineCount = calculateLines(selectedNumbers, bet_type);
+
+    let finalAmount = parseFloat(cdd.bonus_amount);
+
+    // ✅ Apply same rules
+    if (lineCount === 1) {
+      finalAmount = Math.max(finalAmount, 1);
+    } else if (lineCount >= 3) {
+      let rawAmount = lineCount * 0.5;
+
+      rawAmount = Math.ceil(rawAmount);
+
+      if (rawAmount % 2 !== 0) {
+        rawAmount += 1;
+      }
+
+      finalAmount = rawAmount;
+    }
+
+    const newBet = {
+      date: new Date().toLocaleString("en-GB"),
+      ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+      game_name,
+      bet_type,
+      numbers: [...selectedNumbers],
+      amount: finalAmount,
+      bonus: true,
+    };
+
+    setBets(prev => [...prev, newBet]);
+
+    setShowPricePopup(false);
+    setTempBetData(null);
+    setSelectedNumbers([]);
+  };
+
 
   const cancelBet = () => {
     setTempBetData(null);
@@ -157,16 +225,34 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
     }
   }
 
+  // Discount rules mapping [this is dummy we just make it call from api]
+  const discountRules = {
+    C1: 0.10,     // 10%
+    C2: 0.10,
+    C3: 0.20,     // 20%
+    BONUS: 0.10,
+    C4: 0.00,     // no discount
+    "C2+C3": 0.15 // 15% for example
+  };
+
   return (
     <div className="game-inner">
-      {/* LEFT SIDE */}
       <div className="left">
         <div className="left-top">
           <div className="head">
             <div className="smt">Choose any number</div>
-            <button style={{ padding: "2px 10px" }} onClick={autoSelect}>
-              Auto Pick 10
-            </button>
+            <div className="auto-pick-buttons">
+              {[3, 5, 7, 10].map((count) => (
+                <button
+                  key={count}
+                  style={{ padding: "2px 10px", marginRight: "5px" }}
+                  onClick={() => autoSelect(count)}
+                >
+                  Auto Pick {count}
+                </button>
+              ))}
+            </div>
+
             <div className="smt">{selectedNumbers.length}/10</div>
           </div>
           <div className="left-matrix">
@@ -329,10 +415,10 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 <div className="bet-meta-type">Lotto Dice</div>
               </div>
               <h3>Select Price</h3>
-              {price >= 10 && <div className="discount"><b>Hay!</b> you got <b>10% DISCOUNT</b></div>}
+              {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(price * discountRules[tempBetData.bet_type]).toFixed(2)}% DISCOUNT</b></div>}
               <div className="bet-price-selection">
                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
-                <div className="input">${price} {price >= 10 && <span>${(price * 0.10).toFixed(1)}</span>}</div>
+                <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
               </div>
 
@@ -352,6 +438,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
               <div className="popup-buttons">
                 <button className="submit" onClick={confirmBet}>Submit</button>
                 <button className="cancel" onClick={cancelBet}>Cancel</button>
+                {cdd?.bonus_amount > 0 && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
               </div>
             </div>
           </div>

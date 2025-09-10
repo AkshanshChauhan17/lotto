@@ -125,15 +125,15 @@ export default function Pick3Game({
             <div className="line-inputs card" key={idx}>
               <div className="lines">
                 <div className="num-section">
-                  <span className="label">Select Number 1</span>
+                  <span className="label">S1</span>
                   {renderNumberRow(idx, "number1", l.number1)}
                 </div>
                 <div className="num-section">
-                  <span className="label">Select Number 2</span>
+                  <span className="label">S2</span>
                   {renderNumberRow(idx, "number2", l.number2)}
                 </div>
                 <div className="num-section">
-                  <span className="label">Select Number 3</span>
+                  <span className="label">S3</span>
                   {renderNumberRow(idx, "number3", l.number3)}
                 </div>
               </div>
