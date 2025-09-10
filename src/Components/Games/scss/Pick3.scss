@@ -129,3 +129,27 @@ h2 {
   padding-top: 12px;
   font-size: 0.9rem;
 }
+
+@media (max-width: 300px) {
+  .pick3-container {
+    display: grid !important;
+    grid-template-columns: auto !important;
+  }
+  .lines {
+    display: grid !important;
+    grid-template-columns: auto auto auto !important;
+    gap: 10px !important;
+  }
+  .num-section {
+    margin-bottom: 20px;
+    &.x {
+      display: none;
+    }
+    .label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #444;
+    }
+  }
+}

@@ -287,3 +287,25 @@ h2 {
     }
   }
 }
+
+@media (max-width: 400px) {
+  .lines {
+    display: grid !important;
+    grid-template-columns: auto auto !important;
+  }
+
+  .num-section {
+    margin-bottom: 20px;
+  }
+
+  .num-section.x {
+    display: none;
+  }
+
+  .num-section .label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+  }
+}

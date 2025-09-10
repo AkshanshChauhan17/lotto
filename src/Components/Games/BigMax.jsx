@@ -483,7 +483,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
                   <LiveTime />
                   <div className="bet-meta-tkt">TKT{Math.floor(Math.random() * 999999)}</div>
                 </div>
-                <div className="bet-meta-type">Lotto Dice</div>
+                <div className="bet-meta-type">Lotto Max</div>
               </div>
               <h3>Select Price</h3>
               {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(price * discountRules[tempBetData.bet_type]).toFixed(2)}% DISCOUNT</b></div>}
@@ -509,7 +509,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
               <div className="popup-buttons">
                 <button className="submit" onClick={confirmBet}>Submit</button>
                 <button className="cancel" onClick={cancelBet}>Cancel</button>
-                {cdd?.bonus_amount > 0 && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
+                {(cdd?.bonus_amount > 0 && tempBetData.bet_type != "C2+C3") && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
               </div>
             </div>
           </div>

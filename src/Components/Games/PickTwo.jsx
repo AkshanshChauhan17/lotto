@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./scss/Pick2.scss";
+import { toast } from "react-toastify";
 
 const INITIAL_LINE = { number1: null, number2: null, stake: 1, type: "STRAIGHT" };
 
@@ -80,6 +81,7 @@ export default function Pick2Game({
       if (!res.ok) {
         setMessage({ type: "error", text: data.message || "Purchase failed." });
       } else {
+        toast.success(`Ticket ${data.serial} purchased. Total: $${total}`);
         setMessage({
           type: "success",
           text: `Ticket ${data.serial} purchased. Total: $${total}`,
@@ -131,15 +133,15 @@ export default function Pick2Game({
                   <span className="label">{l.number1 || l.number1 === 0 ? 1 : 0}/1</span>
                   {renderNumberRow(idx, "number1", l.number1)}
                 </div>
-                <div className="num-section">
+                <div className="num-section x">
                   <span className="label">--------</span>
                   {renderNumberRowDummy()}
                 </div>
-                 <div className="num-section">
+                 <div className="num-section x">
                   <span className="label">--------</span>
                   {renderNumberRowDummy()}
                 </div>
-                 <div className="num-section">
+                 <div className="num-section x">
                   <span className="label">--------</span>
                   {renderNumberRowDummy()}
                 </div>
@@ -147,15 +149,15 @@ export default function Pick2Game({
                   <span className="label">{l.number2 || l.number2 === 0 ? 1 : 0}/1</span>
                   {renderNumberRow(idx, "number2", l.number2)}
                 </div>
-                <div className="num-section">
+                <div className="num-section x">
                   <span className="label">--------</span>
                   {renderNumberRowDummy()}
                 </div>
-                 <div className="num-section">
+                 <div className="num-section x">
                   <span className="label">--------</span>
                   {renderNumberRowDummy()}
                 </div>
-                 <div className="num-section">
+                 <div className="num-section x">
                   <span className="label">--------</span>
                   {renderNumberRowDummy()}
                 </div>

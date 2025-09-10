@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./scss/Pick3.scss";
+import { toast } from "react-toastify";
 
 const INITIAL_LINE = {
   number1: null,
@@ -91,6 +92,7 @@ export default function Pick3Game({
           type: "success",
           text: `Ticket ${data.serial} purchased. Total: $${total}`,
         });
+        toast.success(`Ticket ${data.serial} purchased. Total: $${total}`);
         setLines([INITIAL_LINE]);
       }
     } catch (e) {
@@ -115,6 +117,16 @@ export default function Pick3Game({
     );
   }
 
+  function renderNumberRowDummy() {
+    return (
+      <div className="number-row">
+        {[...Array(10).keys()].map(() => (
+          <button className="num-btn">-</button>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="pick3-root">
       <h2 className="title">Pick-3 Game</h2>
@@ -125,16 +137,40 @@ export default function Pick3Game({
             <div className="line-inputs card" key={idx}>
               <div className="lines">
                 <div className="num-section">
-                  <span className="label">S1</span>
+                  <span className="label">{l.number1 || l.number1 === 0 ? 1 : 0}/1</span>
                   {renderNumberRow(idx, "number1", l.number1)}
                 </div>
-                <div className="num-section">
-                  <span className="label">S2</span>
-                  {renderNumberRow(idx, "number2", l.number2)}
+                <div className="num-section x">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                <div className="num-section x">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
                 </div>
                 <div className="num-section">
-                  <span className="label">S3</span>
+                  <span className="label">{l.number2 || l.number2 === 0 ? 1 : 0}/1</span>
+                  {renderNumberRow(idx, "number2", l.number2)}
+                </div>
+                <div className="num-section x">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                <div className="num-section x">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                <div className="num-section">
+                  <span className="label">{l.number3 || l.number3 === 0 ? 1 : 0}/1</span>
                   {renderNumberRow(idx, "number3", l.number3)}
+                </div>
+                <div className="num-section x">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
+                </div>
+                <div className="num-section x">
+                  <span className="label">--------</span>
+                  {renderNumberRowDummy()}
                 </div>
               </div>
 

@@ -493,7 +493,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                             <div className="popup-buttons">
                                 <button className="submit" onClick={confirmBet}>Submit</button>
                                 <button className="cancel" onClick={cancelBet}>Cancel</button>
-                                {cdd?.bonus_amount > 0 && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
+                                {(cdd?.bonus_amount > 0 && tempBetData.bet_type != "C2+C3") && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
                             </div>
                         </div>
                     </div>
