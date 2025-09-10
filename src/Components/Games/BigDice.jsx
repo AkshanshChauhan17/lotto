@@ -57,6 +57,24 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
             }
         }
 
+        // ✅ Directly add JACKPOT bet (no second click needed)
+        if (bet_type === "JACKPOT") {
+            const newBet = {
+                date: new Date().toLocaleString("en-GB"),
+                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                game_name,
+                bet_type,
+                numbers: [...selectedNumbers],
+                amount: 2,       // fixed $2
+                bonus: false,
+            };
+
+            setBets(prev => [...prev, newBet]);
+            setSelectedNumbers([]);
+            return;
+        }
+
+        // Normal flow for other bets
         setTempBetData({ game_name, bet_type });
         setPrice(1);
         setShowPricePopup(true);
@@ -67,6 +85,73 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
 
         const { game_name, bet_type } = tempBetData;
 
+        if (bet_type === "C2+C3") {
+            const lineCountC2 = calculateLines(selectedNumbers, "C2");
+            const lineCountC3 = calculateLines(selectedNumbers, "C3");
+
+            // Split price into 2 equal parts (for C2 and C3)
+            const halfPrice = price / 2;
+
+            // --- Validate C2 ---
+            if (lineCountC2 > 0) {
+                const minPriceC2 = lineCountC2 * 0.5; // each line ≥ 0.5
+                if (halfPrice < minPriceC2) {
+                    toast.error(
+                        `For C2 (${lineCountC2} lines), minimum price is $${minPriceC2}`
+                    );
+                    return;
+                }
+            }
+
+            // --- Validate C3 ---
+            if (lineCountC3 > 0) {
+                const minPriceC3 = lineCountC3 * 0.5; // each line ≥ 0.5
+                if (halfPrice < minPriceC3) {
+                    toast.error(
+                        `For C3 (${lineCountC3} lines), minimum price is $${minPriceC3}`
+                    );
+                    return;
+                }
+            }
+
+            // ✅ Passed validations → Add both bets
+            if (lineCountC2 > 0) {
+                setBets(prev => [
+                    ...prev,
+                    {
+                        date: new Date().toLocaleString("en-GB"),
+                        ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                        game_name,
+                        bet_type: "C2",
+                        numbers: [...selectedNumbers],
+                        amount: halfPrice,
+                        bonus: false,
+                    }
+                ]);
+            }
+
+            if (lineCountC3 > 0) {
+                setBets(prev => [
+                    ...prev,
+                    {
+                        date: new Date().toLocaleString("en-GB"),
+                        ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                        game_name,
+                        bet_type: "C3",
+                        numbers: [...selectedNumbers],
+                        amount: halfPrice,
+                        bonus: false,
+                    }
+                ]);
+            }
+
+            setShowPricePopup(false);
+            setTempBetData(null);
+            setSelectedNumbers([]);
+            return;
+        }
+
+        // ✅ Normal case (all other bet types)
         const lineCount = calculateLines(selectedNumbers, bet_type);
 
         if (lineCount === 1 && price < 1) {
@@ -77,14 +162,9 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         if (lineCount >= 3) {
             let rawAmount = lineCount * 0.5;
             let rounded = Math.ceil(rawAmount);
-
-            // enforce even number
-            if (rounded % 2 !== 0) {
-                rounded += 1;
-            }
-
-            if (price !== rounded) {
-                toast.error(`For ${lineCount} lines, price must be $${rounded}`);
+            if (rounded % 2 !== 0) rounded += 1;
+            if (price < rounded) {
+                toast.error(`For ${lineCount} lines, minimum price is $${rounded}`);
                 return;
             }
         }
@@ -100,11 +180,12 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         };
 
         setBets(prev => [...prev, newBet]);
-
         setShowPricePopup(false);
         setTempBetData(null);
         setSelectedNumbers([]);
     };
+
+
 
     const confirmBetBon = () => {
         if (!tempBetData) return;
@@ -113,7 +194,6 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         const lineCount = calculateLines(selectedNumbers, bet_type);
         const bonusAmount = parseFloat(cdd.bonus_amount);
 
-        // ✅ Rule checks
         if (lineCount === 1 && bonusAmount < 1) {
             toast.error("For 1 line, minimum bet is $1");
             return;
@@ -127,8 +207,8 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 rounded += 1;
             }
 
-            if (bonusAmount !== rounded) {
-                toast.error(`For ${lineCount} lines, bonus must be $${rounded}`);
+            if (bonusAmount < rounded) {
+                toast.error(`For ${lineCount} lines, minimum bonus is $${rounded}`);
                 return;
             }
         }
@@ -144,11 +224,11 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         };
 
         setBets(prev => [...prev, newBet]);
-
         setShowPricePopup(false);
         setTempBetData(null);
         setSelectedNumbers([]);
     };
+
 
     // Cancel bet creation
     const cancelBet = () => {
@@ -218,6 +298,8 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 return combinations(n, 2);
             case "PICK3":
                 return combinations(n, 3);
+            case "JACKPOT":
+                return combinations(n, 5);
             default:
                 return 0;
         }
