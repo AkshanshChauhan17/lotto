@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "http://72.60.71.162:5000/api";
 
 async function request(method, endpoint, data = null, token = null) {
   const options = { method, headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token } };

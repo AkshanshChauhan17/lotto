@@ -23,6 +23,7 @@ export default function Game({ cd, upNum }) {
 
     const handleSubmit = (oP) => {
         api.post("/tickets", {
+            "id": localStorage.guid,
             "customer_id": localStorage.guid,
             "store_id": 1,
             "game_id": 1,

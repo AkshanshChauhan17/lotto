@@ -4,7 +4,7 @@ import "./scss/Pick2.scss";
 const INITIAL_LINE = { number1: null, number2: null, stake: 1, type: "STRAIGHT" };
 
 export default function Pick2Game({
-  apiUrl = "http://localhost:5000/api/tickets",
+  apiUrl = "http://72.60.71.162:5000/api/tickets",
   customerId = localStorage.guid,
   storeId = null,
   gameId = 5,
