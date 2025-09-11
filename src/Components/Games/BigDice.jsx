@@ -14,7 +14,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
     const [selectedNumbers, setSelectedNumbers] = useState([]);
     const [showPricePopup, setShowPricePopup] = useState(false);
     const [tempBetData, setTempBetData] = useState(null);
-    const [price, setPrice] = useState(1);
+    const [price, setPrice] = useState(0);
     const [popup, setPopup] = useState(false);
 
     // Bet rules mapping
@@ -76,7 +76,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
 
         // Normal flow for other bets
         setTempBetData({ game_name, bet_type });
-        setPrice(1);
+        setPrice(0);
         setShowPricePopup(true);
     };
 
@@ -358,14 +358,15 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 <div className="left-top">
                     <div className="head">
                         <div className="smt">Choose any number</div>
-                        <div className="auto-pick-buttons">
-                            {[3, 5, 7, 10].map((count) => (
+                        <div className="auto-pick-buttons" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                            <span style={{ marginRight: "5px" }}>Auto pick</span>
+                            {[3, 4, 5, 6, 7, 8, 9, 10].map((count) => (
                                 <button
                                     key={count}
-                                    style={{ padding: "2px 10px", marginRight: "5px" }}
+                                    style={{ padding: "2px 10px" }}
                                     onClick={() => autoSelect(count)}
                                 >
-                                    Auto Pick {count}
+                                    {count}
                                 </button>
                             ))}
                         </div>
