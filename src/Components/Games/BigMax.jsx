@@ -42,12 +42,12 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
 
   const handleBetTypeClick = (game_name, bet_type) => {
     if (bets.length >= 10) {
-      alert("Cart is full. You can only have 10 bets.");
+      toast.error("Cart is full. You can only have 10 bets.");
       return;
     }
 
     if (selectedNumbers.length === 0) {
-      alert("Please select at least one number before choosing a bet type.");
+      toast.error("Please select at least one number before choosing a bet type.");
       return;
     }
 
@@ -55,7 +55,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
     if (bet_type in betRules) {
       const rule = betRules[bet_type];
       if (selectedNumbers.length < rule.min || selectedNumbers.length > rule.max) {
-        alert(`For ${bet_type}, you must select between ${rule.min} and ${rule.max} numbers.`);
+        toast.error(`For ${bet_type}, you must select between ${rule.min} and ${rule.max} numbers.`);
         return;
       }
     }
@@ -284,7 +284,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
       setSelectedNumbers(selectedNumbers.filter((n) => n !== num));
     } else {
       if (selectedNumbers.length >= 12) {
-        alert("You can only select up to 12 numbers.");
+        toast.error("You can only select up to 12 numbers.");
         return;
       }
       setSelectedNumbers([...selectedNumbers, num]);
