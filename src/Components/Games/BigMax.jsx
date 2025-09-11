@@ -26,7 +26,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
     "C2+C3": { min: 3, max: 10 },
     PICK2: { min: 2, max: 10 },
     PICK3: { min: 3, max: 10 },
-    BONUS: { min: 1, max: 1 },
+    BONUS: { min: 1, max: 10 },
     JACKPOT: { min: 5, max: 5 },
   };
 
@@ -172,6 +172,24 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
       }
     }
 
+    if (bet_type === "BONUS") {
+      const perLinePrice = price / selectedNumbers.length; // split amount equally
+      const newBets = selectedNumbers.map((num) => ({
+        date: new Date().toLocaleString("en-GB"),
+        ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+        game_name,
+        bet_type,
+        numbers: [num],   // <-- only 1 number per bet
+        amount: perLinePrice,
+        bonus: false,
+      }));
+      setBets(prev => [...prev, ...newBets]);
+      setShowPricePopup(false);
+      setTempBetData(null);
+      setSelectedNumbers([]);
+      return;
+    }
+
     const newBet = {
       date: new Date().toLocaleString("en-GB"),
       ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
@@ -213,6 +231,24 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
         toast.error(`For ${lineCount} lines, minimum bonus is $${rounded}`);
         return;
       }
+    }
+
+    if (bet_type === "BONUS") {
+      const perLinePrice = price / selectedNumbers.length; // split amount equally
+      const newBets = selectedNumbers.map((num) => ({
+        date: new Date().toLocaleString("en-GB"),
+        ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+        game_name,
+        bet_type,
+        numbers: [num],   // <-- only 1 number per bet
+        amount: perLinePrice,
+        bonus: false,
+      }));
+      setBets(prev => [...prev, ...newBets]);
+      setShowPricePopup(false);
+      setTempBetData(null);
+      setSelectedNumbers([]);
+      return;
     }
 
     const newBet = {
@@ -284,6 +320,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
     const n = selected.length;
     switch (gameType.toUpperCase()) {
       case "C1":
+      case "BONUS":
         return combinations(n, 1);
       case "C2":
         return combinations(n, 2);
