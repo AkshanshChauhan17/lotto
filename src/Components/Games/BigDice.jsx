@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { game_matrix } from "../../data/game_init";
 import { AiFillDelete } from "react-icons/ai";
 import { PiEmpty } from "react-icons/pi";
 import LiveTime from "../Time/LiveTime";
 import PopUpBlast from "../Animations/PopUpBlast";
 import { toast } from "react-toastify";
+import { driver } from "driver.js";
 
 function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => i + start);
 }
 
-export default function BigDice({ bets, setBets, cdd, hS }) {
+export default function BigDice({ bets, setBets, cdd, hS, oba, soba }) {
     const [selectedNumbers, setSelectedNumbers] = useState([]);
     const [showPricePopup, setShowPricePopup] = useState(false);
     const [tempBetData, setTempBetData] = useState(null);
@@ -203,8 +204,6 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         setSelectedNumbers([]);
     };
 
-
-
     const confirmBetBon = () => {
         if (!tempBetData) return;
 
@@ -342,14 +341,14 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         }
     }
 
-    // Discount rules mapping [this is dummy we just make it call from api]
+    // discount rules mapping [this is dummy we just make it call from api]
     const discountRules = {
         C1: 0.10,     // 10%
         C2: 0.10,
         C3: 0.20,     // 20%
         BONUS: 0.10,
-        C4: 0.00,     // no discount
-        "C2+C3": 0.15 // 15% for example
+        C4: 0.10,
+        "C2+C3": 0.15 // 15%
     };
 
     const payoutRulesByGame = {
@@ -371,9 +370,103 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
         const gameRules = payoutRulesByGame[bet.game_name] || {};
         if (bet.bet_type === "JACKPOT") return gameRules.JACKPOT || 0;
         const multiplier = gameRules[bet.bet_type] || 0;
-        console.log(bet, multiplier, gameRules)
         return bet.amount * multiplier;
     }
+
+    const [autoSelectReady, setAutoSelectReady] = useState(false);
+    const [autoConfirmBet, setAutoConfirmBet] = useState(false);
+
+    useEffect(() => {
+        if (autoSelectReady && selectedNumbers.length > 0) {
+            handleBetTypeClick("Big Dice", "C1");
+            setAutoSelectReady(false); // reset flag
+        }
+    }, [autoSelectReady, selectedNumbers]);
+
+    useEffect(() => {
+        if (autoConfirmBet) {
+            confirmBetBon();
+            setAutoConfirmBet(false);
+        }
+    }, [autoConfirmBet]);
+
+    const startTour = () => {
+        const tour = driver({
+            showProgress: true,
+            steps: [
+                {
+                    element: ".step-1",
+                    popover: {
+                        title: "Select Number",
+                        description: "Let's select some numbers automatically for you.",
+                        showButtons: ['next', 'close'] // ✅ hide "previous"
+                    },
+                    onHighlighted: () => {
+                        autoSelect(3); // ✅ Select 3 numbers
+                        soba(false);
+                    }
+                },
+                {
+                    element: ".step-2",
+                    popover: {
+                        title: "Select Bet Type",
+                        description: "Now we choose a bet type.",
+                        showButtons: ['next', 'close']
+                    },
+                    onHighlighted: () => {
+                        setShowPricePopup(false);
+                    }
+                },
+                {
+                    element: ".price-popup",
+                    popover: {
+                        title: "Select bonus button",
+                        description: "Here on right bottom.",
+                        showButtons: ['next', 'close']
+                    },
+                    onHighlighted: () => {
+                        setAutoSelectReady(true);
+                        setPrice(0);
+                    }
+                },
+                {
+                    element: ".step-3",
+                    popover: {
+                        title: `Choose Bonus ${cdd?.bonus_amount}`,
+                        description: "Here you choose how much you want to bet.",
+                        showButtons: ['next', 'close']
+                    }
+                },
+                {
+                    element: ".step-4",
+                    popover: {
+                        title: "Review Cart",
+                        description: "Your bet with bonus will appear here.",
+                        showButtons: ['next', 'close']
+                    },
+                    onHighlighted: () => {
+                        setAutoConfirmBet(true);
+                    }
+                },
+                {
+                    element: ".step-5",
+                    popover: {
+                        title: "Place Your Bet",
+                        description: "Finally confirm to use your bonus money.",
+                        showButtons: ['close'] // ✅ last step, no "next"
+                    }
+                }
+            ]
+        });
+
+        tour.drive();
+    };
+
+    useEffect(() => {
+        if (oba) {
+            startTour();
+        }
+    }, [oba]);
 
     return (
         <div className="game-inner">
@@ -395,7 +488,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                         </div>
                         <div className="smt">{selectedNumbers.length}/10</div>
                     </div>
-                    <div className="left-matrix">
+                    <div className="left-matrix step-1">
                         {range(game_matrix[0].lotto_dice.clickable_numbers[0], game_matrix[0].lotto_dice.clickable_numbers[1]).map((e, i) => (
                             <button
                                 className="matrix-selector"
@@ -420,7 +513,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                         <div className="smt">Choose bet type</div>
                     </div>
                     <div className="controller">
-                        <div className="left-controllers-row-one">
+                        <div className="left-controllers-row-one step-2">
                             {game_matrix[0].lotto_dice.controllers.row_one.map((e, i) => (
                                 <button
                                     key={i}
@@ -447,7 +540,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                                 }
                                 return <button
                                     key={i}
-                                    className="left-controller"
+                                    className="left-controller step-2"
                                     disabled={e.disabled}
                                     onClick={() => handleBetTypeClick("Big Dice", e.name)}
                                 >
@@ -465,7 +558,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                     <div className="left-text">Selected bets</div>
                     <div className="right-text">{bets.length}/10</div>
                 </div>
-                <div className="selected-cart">
+                <div className="selected-cart step-4">
                     {
                         bets.length <= 0 && <div className="empty">Empty Cart!<PiEmpty className="empty-icon" /></div>
                     }
@@ -504,7 +597,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 </div>
                 <div className="selected-controls">
                     <button className="clear" onClick={() => setBets([])}>CLEAR ALL</button>
-                    <button className="submit" onClick={() => handleSubmit()}>SUBMIT</button>
+                    <button className="submit step-5" onClick={() => handleSubmit()}>SUBMIT</button>
                 </div>
             </div>
 
@@ -530,7 +623,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                                 <div className="bet-meta-type">Lotto Dice</div>
                             </div>
                             <h3>Select Price</h3>
-                            {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(price * discountRules[tempBetData.bet_type]).toFixed(2)}% DISCOUNT</b></div>}
+                            {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
                             <div className="bet-price-selection">
                                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
                                 <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
@@ -553,13 +646,12 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                             <div className="popup-buttons">
                                 <button className="submit" onClick={confirmBet}>Submit</button>
                                 <button className="cancel" onClick={cancelBet}>Cancel</button>
-                                {(cdd?.bonus_amount > 0 && tempBetData.bet_type != "C2+C3") && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
+                                {(cdd?.bonus_amount > 0 && tempBetData.bet_type != "C2+C3") && <button className="bonus step-3" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
                             </div>
                         </div>
                     </div>
                 </div>
             )}
-
         </div>
     );
 }

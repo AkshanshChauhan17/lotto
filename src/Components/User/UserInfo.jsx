@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './userDetails.scss';
 
-const AccountDetails = () => {
+const AccountDetails = ({info}) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: 'Robet',
@@ -36,7 +36,7 @@ const AccountDetails = () => {
           <h2 className="section-title">Profile</h2>
           
           <div className="profile-card">
-            <div className="avatar-container">
+            {/* <div className="avatar-container">
               <img src="/assets/images/avatar.jpg" alt="Profile Avatar" className="avatar" />
               <button className="edit-avatar-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +44,7 @@ const AccountDetails = () => {
                   <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
-            </div>
+            </div> */}
 
             <div className="profile-info">
               <div className="input-group">
@@ -52,7 +52,7 @@ const AccountDetails = () => {
                 <div className="input-with-edit">
                   <input 
                     type="text" 
-                    value={formData.name}
+                    value={info?.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
                   />
                   <button className="edit-btn">
@@ -69,7 +69,7 @@ const AccountDetails = () => {
                 <div className="input-with-edit">
                   <input 
                     type="text" 
-                    value={formData.mobile}
+                    value={info?.phone}
                     onChange={(e) => handleInputChange('mobile', e.target.value)}
                   />
                   <button className="edit-btn">
@@ -86,7 +86,7 @@ const AccountDetails = () => {
                 <div className="input-with-edit">
                   <input 
                     type="email" 
-                    value={formData.email}
+                    value={info?.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                   />
                   <button className="edit-btn">
@@ -101,20 +101,20 @@ const AccountDetails = () => {
 
             <div className="profile-stats">
               <div className="stat-item">
-                <span className="stat-label">Game_Id</span>
-                <span className="stat-value">#28HM2P8UI3</span>
+                <span className="stat-label">Customer Id</span>
+                <span className="stat-value">{info?.id}</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">Balance</span>
-                <span className="stat-value">$48</span>
+                <span className="stat-value">${info?.balance}</span>
               </div>
               <div className="stat-item">
-                <span className="stat-label">Wins</span>
-                <span className="stat-value">8</span>
+                <span className="stat-label">Bonus Balance</span>
+                <span className="stat-value">${info?.bonus_amount}</span>
               </div>
               <div className="stat-item">
-                <span className="stat-label">Profit</span>
-                <span className="stat-value">$11+</span>
+                <span className="stat-label">Created At</span>
+                <span className="stat-value">{info?.created_at}</span>
               </div>
             </div>
           </div>

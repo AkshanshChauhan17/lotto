@@ -14,6 +14,8 @@ import Locations from "./Components/Games/Location";
 import UserDetails from "./Components/User/UserInfo";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Help from "./Pages/Help";
+import "driver.js/dist/driver.css";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -81,7 +83,8 @@ function App() {
         <Route path="/store" element={<TicketsTable />} />
         <Route path="/web" element={<TicketsTable />} />
         <Route path="/location" element={<Locations />} />
-        <Route path="/info" element={<UserDetails />} />
+        <Route path="/info" element={<UserDetails info={customerDetails} />} />
+        <Route path="/help/:slug" element={<Help />} />
         {game_navigation.map((e, i) => (
           <Route
             path={e.url}

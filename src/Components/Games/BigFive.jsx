@@ -348,7 +348,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
     C2: 0.10,
     C3: 0.20,     // 20%
     BONUS: 0.10,
-    C4: 0.00,     // no discount
+    C4: 0.10,     // no discount
     "C2+C3": 0.15 // 15% for example
   };
 
@@ -556,7 +556,7 @@ export default function BigDice({ bets, setBets, cdd, hS }) {
                 <div className="bet-meta-type">Lotto Five</div>
               </div>
               <h3>Select Price</h3>
-              {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(price * discountRules[tempBetData.bet_type]).toFixed(2)}% DISCOUNT</b></div>}
+              {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
               <div className="bet-price-selection">
                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
                 <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>

@@ -15,9 +15,9 @@ export default function Navigation({cud}) {
         <div className="right">
             { cud?.bonus_amount ? <div className="total-balance" style={{fontSize: 16}}>${cud?.bonus_amount} bonus</div> : null }
             <div className="total-balance">${cud?.balance}</div>
-            <div className="user-profile">
+            <Link to={"/info"} className="user-profile">
                 <AiOutlineUser className="user-icon" color="black"/>
-            </div>
+            </Link>
         </div>
     </div>
 }

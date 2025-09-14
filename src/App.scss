@@ -308,6 +308,7 @@ body {
       .bet-ar {
         padding-bottom: 20px;
         border-bottom: 1px solid $line-color;
+
         .bet {
           display: flex;
           justify-content: space-between;
@@ -410,6 +411,7 @@ body {
   display: flex;
   @extend .f-xsm;
   gap: 10px;
+
   .b-numbers {
     font-weight: 600;
   }
@@ -978,6 +980,7 @@ body {
     .line-inputs {
       display: grid;
       grid-template-columns: auto;
+
       .lines {
         display: flex;
         gap: 40px;
@@ -1130,6 +1133,102 @@ body {
   }
 }
 
+.pop-up-bonus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+
+  .bonus-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    padding: 24px 32px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    animation: scaleIn 0.3s ease-out;
+    position: relative;
+
+    .close-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      cursor: pointer;
+      font-size: 1.4rem;
+      color: #777;
+      transition: color 0.2s ease-in-out;
+
+      &:hover {
+        color: #111;
+      }
+    }
+
+    .heading {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 6px;
+    }
+
+    .subheading {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    .instructions {
+      background: #f8f9fa;
+      border-left: 4px solid #1ca5fb;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #444;
+      text-align: left;
+
+      p {
+        margin: 6px 0;
+      }
+
+      strong {
+        color: #1ca5fb;
+      }
+    }
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+// Smooth scale animation
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .pick3-root {
   max-width: 100% !important;
   margin: 20px auto;
@@ -1155,6 +1254,7 @@ body {
     .line-inputs {
       display: grid;
       grid-template-columns: auto;
+
       .lines {
         display: flex;
         gap: 40px;
@@ -1461,6 +1561,7 @@ body {
   display: grid;
   grid-template-columns: auto auto auto;
   cursor: pointer;
+
   button {
     background-color: white;
     padding: 5px;
@@ -1468,6 +1569,7 @@ body {
     border: 0px;
     box-shadow: inset 0px 0px 5px $gray-color;
   }
+
   button:active {
     background-color: $gray-color;
   }
@@ -1514,7 +1616,7 @@ $desktop: 1024px;
 
 body {
   background-color: $gray-color;
-  
+
   @include mobile-only {
     font-size: 14px;
     line-height: 1.4;
@@ -1565,7 +1667,7 @@ body {
       color: white;
       text-decoration: none;
       @extend .f-l;
-      
+
       @include mobile-only {
         @include touch-target;
         font-size: 14px;
@@ -1586,7 +1688,7 @@ body {
 
     .total-balance {
       @extend .f-xl;
-      
+
       @include mobile-only {
         font-size: 16px;
       }
@@ -1599,7 +1701,7 @@ body {
       background-color: white;
       border-radius: 50px;
       padding: 8px;
-      
+
       @include mobile-only {
         @include touch-target;
       }
@@ -1641,7 +1743,7 @@ body {
 
       .game-type {
         @extend .f-sm-blue;
-        
+
         @include mobile-only {
           font-size: 12px;
         }
@@ -1649,7 +1751,7 @@ body {
 
       .game-name {
         @extend .f-xxl;
-        
+
         @include mobile-only {
           font-size: 20px;
         }
@@ -1678,7 +1780,7 @@ body {
 
       .link {
         @extend .game-links;
-        
+
         @include mobile-only {
           @include touch-target;
           font-size: 12px;
@@ -1687,7 +1789,7 @@ body {
 
       .link:first-child {
         margin-left: 30px;
-        
+
         @include mobile-only {
           margin-left: 10px;
         }
@@ -1695,7 +1797,7 @@ body {
 
       .link:last-child {
         margin-right: 30px;
-        
+
         @include mobile-only {
           margin-right: 10px;
         }
@@ -1708,7 +1810,7 @@ body {
         @extend .f-lt;
         min-width: 60px;
         text-align: center;
-        
+
         @include mobile-only {
           padding: 8px 12px;
           min-width: 50px;
@@ -1731,7 +1833,7 @@ body {
 
       .title {
         @extend .f-smt;
-        
+
         @include mobile-only {
           font-size: 14px;
         }
@@ -1769,7 +1871,7 @@ body {
 
           .text {
             @extend .f-xsm;
-            
+
             @include mobile-only {
               font-size: 10px;
             }
@@ -1805,7 +1907,7 @@ body {
         @extend .f-smt-b;
         display: flex;
         justify-content: space-between;
-        
+
         @include mobile-only {
           font-size: 14px;
           flex-wrap: wrap;
@@ -1842,7 +1944,7 @@ body {
           outline: 0px;
           border: 0px;
           box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
-          
+
           @include mobile-only {
             @include touch-target;
             padding: 8px;
@@ -1867,7 +1969,7 @@ body {
         @extend .f-smt-b;
         display: flex;
         justify-content: space-between;
-        
+
         @include mobile-only {
           font-size: 14px;
           flex-wrap: wrap;
@@ -1909,7 +2011,7 @@ body {
             border: 0px;
             background-color: $bg-color;
             color: $text-white;
-            
+
             @include mobile-only {
               @include touch-target;
               font-size: 12px;
@@ -1944,7 +2046,7 @@ body {
             outline: 0px;
             border: 0px;
             cursor: pointer;
-            
+
             @include mobile-only {
               @include touch-target;
               font-size: 12px;
@@ -1980,7 +2082,7 @@ body {
       padding: 8px;
       text-align: center;
       @extend .f-smt;
-      
+
       @include mobile-only {
         padding: 6px;
         font-size: 12px;
@@ -1992,7 +2094,7 @@ body {
       @extend .f-smt-b;
       display: flex;
       justify-content: space-between;
-      
+
       @include mobile-only {
         font-size: 14px;
         flex-wrap: wrap;
@@ -2035,7 +2137,7 @@ body {
         .empty-icon {
           font-size: 100px;
           opacity: 0.2;
-          
+
           @include mobile-only {
             font-size: 60px;
           }
@@ -2045,11 +2147,11 @@ body {
       .bet-ar {
         padding-bottom: 20px;
         border-bottom: 1px solid $line-color;
-        
+
         @include mobile-only {
           padding-bottom: 15px;
         }
-        
+
         .bet {
           display: flex;
           justify-content: space-between;
@@ -2067,10 +2169,10 @@ body {
             @include mobile-only {
               order: 1;
             }
-            
+
             .top {
               @extend .f-date;
-              
+
               @include mobile-only {
                 font-size: 12px;
               }
@@ -2078,7 +2180,7 @@ body {
 
             .bottom {
               @extend .f-tkt;
-              
+
               @include mobile-only {
                 font-size: 14px;
               }
@@ -2089,10 +2191,10 @@ body {
             @include mobile-only {
               order: 2;
             }
-            
+
             .top {
               @extend .f-g-name;
-              
+
               @include mobile-only {
                 font-size: 14px;
               }
@@ -2104,7 +2206,7 @@ body {
 
               .b-left {
                 @extend .f-type;
-                
+
                 @include mobile-only {
                   font-size: 12px;
                 }
@@ -2112,7 +2214,7 @@ body {
 
               .b-right {
                 @extend .f-type-two;
-                
+
                 @include mobile-only {
                   font-size: 12px;
                 }
@@ -2131,7 +2233,7 @@ body {
 
             .left {
               @extend .f-amount;
-              
+
               @include mobile-only {
                 font-size: 16px;
               }
@@ -2139,7 +2241,7 @@ body {
 
             .right {
               @extend .f-amount-two;
-              
+
               @include mobile-only {
                 font-size: 14px;
               }
@@ -2157,7 +2259,7 @@ body {
             display: flex;
             align-items: center;
             justify-content: center;
-            
+
             @include mobile-only {
               @include touch-target;
               order: 4;
@@ -2192,7 +2294,7 @@ body {
         outline: 0px;
         border-radius: $button-radius;
         width: 100%;
-        
+
         @include mobile-only {
           @include touch-target;
         }
@@ -2207,7 +2309,7 @@ body {
         border: 0px;
         outline: 0px;
         border-radius: $button-radius;
-        
+
         @include mobile-only {
           @include touch-target;
         }
@@ -2220,13 +2322,13 @@ body {
   display: flex;
   @extend .f-xsm;
   gap: 10px;
-  
+
   @include mobile-only {
     flex-wrap: wrap;
     gap: 5px;
     font-size: 12px;
   }
-  
+
   .b-numbers {
     font-weight: 600;
   }
@@ -2269,7 +2371,7 @@ body {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      
+
       @include mobile-only {
         gap: 8px;
       }
@@ -2282,7 +2384,7 @@ body {
       border: 0px;
       outline: 0px;
       background-color: $gray-color;
-      
+
       @include mobile-only {
         @include touch-target;
         font-size: 16px; // Prevents zoom on iOS
@@ -2335,7 +2437,7 @@ body {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      
+
       @include mobile-only {
         gap: 8px;
       }
@@ -2348,7 +2450,7 @@ body {
       border: 0px;
       outline: 0px;
       background-color: $gray-color;
-      
+
       @include mobile-only {
         @include touch-target;
         font-size: 16px; // Prevents zoom on iOS
@@ -2416,7 +2518,7 @@ body {
 
       .title {
         @extend .f-xl;
-        
+
         @include mobile-only {
           font-size: 18px;
           text-align: center;
@@ -2447,7 +2549,7 @@ body {
           align-items: center;
           justify-content: center;
           box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2);
-          
+
           @include mobile-only {
             @include touch-target;
             padding: 8px 12px;
@@ -2487,7 +2589,7 @@ body {
 
           .bet-meta-tkt {
             @extend .f-xl;
-            
+
             @include mobile-only {
               font-size: 18px;
             }
@@ -2496,7 +2598,7 @@ body {
 
         .bet-meta-type {
           @extend .f-xxl;
-          
+
           @include mobile-only {
             font-size: 20px;
           }
@@ -2506,7 +2608,7 @@ body {
       h3 {
         @extend .f-l;
         margin-top: 10px;
-        
+
         @include mobile-only {
           font-size: 16px;
           margin-top: 5px;
@@ -2529,7 +2631,7 @@ body {
           outline: 0px;
           @extend .f-xl;
           border-radius: $button-radius;
-          
+
           @include mobile-only {
             @include touch-target;
             font-size: 16px;
@@ -2554,7 +2656,7 @@ body {
             position: absolute;
             top: 0;
             right: 0;
-            
+
             @include mobile-only {
               padding: 8px;
               font-size: 12px;
@@ -2566,7 +2668,7 @@ body {
           min-width: 70px;
           cursor: pointer;
           outline: 1px solid rgb(206, 206, 206);
-          
+
           @include mobile-only {
             min-width: auto;
           }
@@ -2589,7 +2691,7 @@ body {
           @extend .f-l;
           width: 100%;
           cursor: pointer;
-          
+
           @include mobile-only {
             @include touch-target;
           }
@@ -2637,7 +2739,7 @@ body {
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 0.9rem;
-      
+
       @include mobile-only {
         @include touch-target;
         flex: 1;
@@ -2713,7 +2815,7 @@ body {
     text-align: center;
     padding: 20px;
     color: #888;
-    
+
     @include mobile-only {
       padding: 15px;
     }
@@ -3067,7 +3169,7 @@ body {
     .line-inputs {
       display: grid;
       grid-template-columns: auto;
-      
+
       .lines {
         display: flex;
         gap: 40px;
@@ -3516,7 +3618,7 @@ body {
   @include mobile-only {
     gap: 1px;
   }
-  
+
   button {
     background-color: white;
     padding: 5px;
@@ -3529,7 +3631,7 @@ body {
       font-size: 16px;
     }
   }
-  
+
   button:active {
     background-color: $gray-color;
   }
@@ -3537,8 +3639,10 @@ body {
 
 // Additional mobile-specific optimizations
 @include mobile-only {
+
   // Prevent horizontal scrolling
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     width: 100%;
   }
@@ -3564,7 +3668,9 @@ body {
 }
 
 // High DPI displays optimization
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
   .matrix-selector,
   .left-controller,
   .num-btn {
