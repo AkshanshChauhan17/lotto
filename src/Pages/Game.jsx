@@ -11,6 +11,7 @@ import BestOfLuckPopup from "../Components/BestOfLuck";
 import Pick2Game from "../Components/Games/PickTwo";
 import Pick3Game from "../Components/Games/PickThree";
 import { CgClose } from "react-icons/cg";
+import { toast } from "react-toastify";
 
 export default function Game({ cd, upNum }) {
     const [betss, setBetss] = useState([]);
@@ -45,7 +46,7 @@ export default function Game({ cd, upNum }) {
             setBetss([]);
             setShow(true);
             upNum(Math.round(Math.random() * 999999))
-        }).catch((err) => { if (err) throw err });
+        }).catch((err) => { if (err) toast.error(err) });
     };
 
     const gameIndexMap = {
