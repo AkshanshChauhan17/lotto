@@ -33,7 +33,7 @@ export default function Game({ cd, upNum }) {
             "game_id": 1,
             "draw_id": null,
             "staff_id": null,
-            "lines": betss.map(item => ({
+            "lines": betss.map(item => ( {
                 bet_type: item.bet_type,
                 numbers: item.numbers,
                 stake: item.amount,
@@ -46,7 +46,7 @@ export default function Game({ cd, upNum }) {
             setBetss([]);
             setShow(true);
             upNum(Math.round(Math.random() * 999999))
-        }).catch((err) => { if (err) toast.error(err) });
+        }).catch((err) => toast.error("Something Went Wrong!!!"));
     };
 
     const gameIndexMap = {

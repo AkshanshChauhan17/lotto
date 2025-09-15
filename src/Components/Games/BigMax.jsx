@@ -353,16 +353,16 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
 
   const payoutRulesByGame = {
     "Big Dice": {
-      C1: 5, C2: 35, C3: 300, BONUS: 30, JACKPOT: 30000
+      C1: 5, C2: 35, C3: 300, C4: 640, BONUS: 30, JACKPOT: 30000
     },
     "Big Six": {
-      C1: 7, C2: 50, C3: 550, BONUS: 42, JACKPOT: 30000
+      C1: 7, C2: 50, C3: 550, C4: 640, BONUS: 42, JACKPOT: 30000
     },
     "Big Max": {
       C1: 7, C2: 35, C3: 200, C4: 640, BONUS: 42, JACKPOT: 30000
     },
     "Big Five": {
-      C1: 7, C2: 70, C3: 800, JACKPOT: 30000
+      C1: 7, C2: 70, C3: 800, C4: 640, BONUS: 42, JACKPOT: 30000
     }
   };
 
@@ -370,7 +370,6 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
     const gameRules = payoutRulesByGame[bet.game_name] || {};
     if (bet.bet_type === "JACKPOT") return gameRules.JACKPOT || 0;
     const multiplier = gameRules[bet.bet_type] || 0;
-    console.log(bet, multiplier, gameRules)
     return bet.amount * multiplier;
   }
 
@@ -427,7 +426,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
                   key={i}
                   className="left-controller"
                   disabled={e.disabled}
-                  onClick={() => handleBetTypeClick("BigMax", e.name)}
+                  onClick={() => handleBetTypeClick("Big Max", e.name)}
                 >
                   {e.name}
                 </button>
@@ -458,7 +457,7 @@ export default function BigMax({ bets, setBets, cdd, hS }) {
                     key={i}
                     className="left-controller"
                     disabled={e.disabled}
-                    onClick={() => handleBetTypeClick("BigMax", e.name)}
+                    onClick={() => handleBetTypeClick("Big Max", e.name)}
                   >
                     {e.name}
                   </button>
