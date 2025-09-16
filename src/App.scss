@@ -1133,6 +1133,80 @@ body {
   }
 }
 
+.bonus-choice-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bonus-choice-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  width: 320px;
+  text-align: center;
+}
+
+.bonus-choice-buttons button {
+  margin: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.use-bonus {
+  background: #1CA5FB;
+  color: white;
+}
+
+.add-bonus {
+  background: #28a745;
+  color: white;
+}
+
+.cancel {
+  background: #dc3545;
+  color: white;
+}
+
+
+.discount-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.discount-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.discount-popup .popup-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: center;
+}
+
+.submit, .bonus {
+  padding: 10px;
+}
+
 .pop-up-bonus {
   position: fixed;
   top: 0;
@@ -1209,6 +1283,7 @@ body {
     transform: scale(0.8);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;

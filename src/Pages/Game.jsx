@@ -20,6 +20,8 @@ export default function Game({ cd, upNum }) {
     const [show, setShow] = useState(false);
     const [bonusOpen, setBonusOpen] = useState(true);
     const [openBa, setOpenBa] = useState(false);
+    const [totalDiscount, setTotalDiscount] = useState(0);
+    const [destroyy, setDestroyy] = useState(1);
 
     useEffect(() => {
         setCurrentLocation(location.pathname);
@@ -33,11 +35,14 @@ export default function Game({ cd, upNum }) {
             "game_id": 1,
             "draw_id": null,
             "staff_id": null,
-            "lines": betss.map(item => ( {
+            "lines": betss.map(item => ({
                 bet_type: item.bet_type,
                 numbers: item.numbers,
                 stake: item.amount,
-                bonus: item.bonus
+                bonus: item.bonus,
+                addToWin: item.addToWinningAmount,
+                freePlay: item.freePlay,
+                discount: totalDiscount
             })),
             "total_stake": betss.reduce((sum, item) => sum + item.amount, 0),
             "payment_method": "ACCOUNT_BALANCE",
@@ -46,7 +51,8 @@ export default function Game({ cd, upNum }) {
             setBetss([]);
             setShow(true);
             upNum(Math.round(Math.random() * 999999))
-        }).catch((err) => toast.error("Something Went Wrong!!!"));
+            setDestroyy(Math.round(Math.random() * 999999))
+        }).catch((err) => toast.error("Something Went Wrong!!!", { onClick: () => window.open() }));
     };
 
     const gameIndexMap = {
@@ -73,14 +79,14 @@ export default function Game({ cd, upNum }) {
                         <div className="subheading">You have ${cd?.bonus_amount} Bonus Balance</div>
                         <div className="instructions">
                             <p>
-                                💡 Want to see how it works? Tap on the <strong onClick={()=>setOpenBa(true)}>"BONUS AMOUNT"</strong> text above to take a quick guided tour.
+                                💡 Want to see how it works? Tap on the <strong onClick={() => setOpenBa(true)}>"BONUS AMOUNT"</strong> text above to take a quick guided tour.
                             </p>
                         </div>
                     </div>
                 </div>
             ) : null}
 
-            {currentLocation === "/game/lotto-dice" && <BigDice cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} oba={openBa} soba={setBonusOpen} />}
+            {currentLocation === "/game/lotto-dice" && <BigDice cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} tDes={totalDiscount} tDesDef={setTotalDiscount} destroy={destroyy} />}
             {currentLocation === "/game/lotto-six" && <BigSix cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} />}
             {currentLocation === "/game/lotto-max" && <BigMax cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} />}
             {currentLocation === "/game/lotto-five" && <BigFive cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} />}
