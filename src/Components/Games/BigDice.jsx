@@ -554,9 +554,9 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                             <h3>Select Price</h3>
                             {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
                             {(!freePlay || discount <= 0) && <div className="bet-price-selection">
-                                {/* <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button> */}
+                                <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
                                 <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
-                                {/* <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button> */}
+                                <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
                             </div>}
 
                             {(!freePlay || discount <= 0) && <div className="number-pad">
