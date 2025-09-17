@@ -171,7 +171,7 @@ export default function Pick2Game({
                     onChange={(e) => updateLine(idx, "type", e.target.value)}
                   >
                     <option value="STRAIGHT">Straight</option>
-                    <option value="MATCH_FIRST">Match First</option>
+                    <option value="BOX">Box</option>
                   </select>
                 </label>
 

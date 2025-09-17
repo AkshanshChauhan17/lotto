@@ -321,27 +321,32 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
     const [discount, setDiscount] = useState(0);
 
     function calculateTotalDiscount(bets) {
-        let total = bets.reduce((sum, bet) => {
-            const discountRate = discountRules[bet.bet_type] || 0;
-            if (discountRate > 0 && bet.amount >= 5) {
-                sum += bet.amount * discountRate;
-            }
-            return sum;
-        }, 0);
+        if (!Array.isArray(bets)) return "0.00";
 
-        // 🔍 Check if any bonus bet exists
-        const hasBonus = bets.some(bet => bet.bonus === true);
+        // only bets of the requested game
+        const gameBets = bets.filter(bet => bet.game_name == "Big Dice");
 
-        if (hasBonus) {
-            // ✅ If bonus is present, we don't apply any discount
-            total = 0;
+        // if any bonus inside THIS game, discount for THIS game = 0
+        const hasBonusInGame = gameBets.some(bet => bet.bonus === true);
+
+        let total = 0;
+        if (!hasBonusInGame) {
+            total = gameBets.reduce((sum, bet) => {
+                const discountRate = discountRules[bet.bet_type] || 0;
+                const amount = Number(bet.amount) || 0;
+                if (discountRate > 0 && amount >= 5) {
+                    sum += amount * discountRate;
+                }
+                return sum; // always return accumulator
+            }, 0);
         }
 
-        // ✅ Update state only once (after deciding final total)
-        tDesDef(total.toFixed(2));
-        setDiscount(total.toFixed(2));
+        const finalTotal = total.toFixed(2);
+        // NOTE: set state with the computed value directly (state setters are async)
+        tDesDef(finalTotal);
+        setDiscount(finalTotal);
 
-        return total.toFixed(2);
+        return finalTotal;
     }
 
     useEffect(() => {

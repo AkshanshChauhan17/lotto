@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { game_matrix } from "../../data/game_init";
 import { AiFillDelete } from "react-icons/ai";
 import { PiEmpty } from "react-icons/pi";
@@ -10,7 +10,7 @@ function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => i + start);
 }
 
-export default function Lotto_Six({ bets, setBets, cdd, hS }) {
+export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy }) {
     const [selectedNumbers, setSelectedNumbers] = useState([]);
     const [showPricePopup, setShowPricePopup] = useState(false);
     const [tempBetData, setTempBetData] = useState(null);
@@ -38,7 +38,6 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
         const shuffled = allNums.sort(() => 0.5 - Math.random());
         setSelectedNumbers(shuffled.slice(0, count));
     };
-
 
     const handleBetTypeClick = (game_name, bet_type) => {
         if (bets.length >= 10) {
@@ -87,186 +86,126 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
         if (!tempBetData) return;
 
         const { game_name, bet_type } = tempBetData;
-
-        if (bet_type === "C2+C3") {
-            const lineCountC2 = calculateLines(selectedNumbers, "C2");
-            const lineCountC3 = calculateLines(selectedNumbers, "C3");
-
-            // Split price into 2 equal parts (for C2 and C3)
-            const halfPrice = price / 2;
-
-            // --- Validate C2 ---
-            if (lineCountC2 > 0) {
-                const minPriceC2 = lineCountC2 * 0.5; // each line ≥ 0.5
-                if (halfPrice < minPriceC2) {
-                    toast.error(
-                        `For C2 (${lineCountC2} lines), minimum price is $${minPriceC2}`
-                    );
-                    return;
-                }
-            }
-
-            // --- Validate C3 ---
-            if (lineCountC3 > 0) {
-                const minPriceC3 = lineCountC3 * 0.5; // each line ≥ 0.5
-                if (halfPrice < minPriceC3) {
-                    toast.error(
-                        `For C3 (${lineCountC3} lines), minimum price is $${minPriceC3}`
-                    );
-                    return;
-                }
-            }
-
-            // ✅ Passed validations → Add both bets
-            if (lineCountC2 > 0) {
-                setBets(prev => [
-                    ...prev,
-                    {
-                        date: new Date().toLocaleString("en-GB"),
-                        ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                        game_name,
-                        bet_type: "C2",
-                        numbers: [...selectedNumbers],
-                        amount: halfPrice,
-                        bonus: false,
-                    }
-                ]);
-            }
-
-            if (lineCountC3 > 0) {
-                setBets(prev => [
-                    ...prev,
-                    {
-                        date: new Date().toLocaleString("en-GB"),
-                        ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                        game_name,
-                        bet_type: "C3",
-                        numbers: [...selectedNumbers],
-                        amount: halfPrice,
-                        bonus: false,
-                    }
-                ]);
-            }
-
-            setShowPricePopup(false);
-            setTempBetData(null);
-            setSelectedNumbers([]);
-            return;
-        }
-
-        // ✅ Normal case (all other bet types)
         const lineCount = calculateLines(selectedNumbers, bet_type);
 
-        if (lineCount === 1 && price < 1) {
-            toast.error("For 1 line, minimum bet is $1");
+        // ✅ Validation: Must have at least 1 valid line
+        if (lineCount <= 0) {
+            toast.error(`Not enough numbers selected for ${bet_type}`);
             return;
         }
 
-        if (lineCount >= 3) {
-            let rawAmount = lineCount * 0.5;
-            let rounded = Math.ceil(rawAmount);
-            if (rounded % 2 !== 0) rounded += 1;
-            if (price < rounded) {
-                toast.error(`For ${lineCount} lines, minimum price is $${rounded}`);
-                return;
-            }
+        // ✅ Minimum price validation
+        const minPrice = lineCount >= 3 ? makeEven(Math.ceil(lineCount * 0.5)) : 1;
+        if (price < minPrice) {
+            toast.error(`Minimum price for ${lineCount} lines is $${minPrice}`);
+            return;
         }
 
-        if (bet_type === "BONUS") {
-            const perLinePrice = price / selectedNumbers.length; // split amount equally
-            const newBets = selectedNumbers.map((num) => ({
+        // ✅ Handle C2+C3 combined logic
+        if (bet_type === "C2+C3") {
+            const c2Lines = calculateLines(selectedNumbers, "C2");
+            const c3Lines = calculateLines(selectedNumbers, "C3");
+            const halfPrice = price / 2;
+
+            if (c2Lines > 0) addBet(game_name, "C2", selectedNumbers, halfPrice);
+            if (c3Lines > 0) addBet(game_name, "C3", selectedNumbers, halfPrice);
+        }
+
+        // ✅ Handle BONUS: split into individual bets
+        else if (bet_type === "BONUS") {
+            const perLinePrice = price / selectedNumbers.length;
+            selectedNumbers.forEach((num) =>
+                addBet(game_name, "BONUS", [num], perLinePrice)
+            );
+        }
+
+        // ✅ Handle normal bet types (C1, C2, C3, C4)
+        else {
+            addBet(game_name, bet_type, selectedNumbers, price);
+        }
+
+        resetTempState();
+    };
+
+    function addBet(game_name, bet_type, numbers, amount) {
+        setBets((prev) => [
+            ...prev,
+            {
                 date: new Date().toLocaleString("en-GB"),
                 ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
                 game_name,
                 bet_type,
-                numbers: [num],   // <-- only 1 number per bet
-                amount: perLinePrice,
+                numbers: [...numbers],
+                amount,
                 bonus: false,
-            }));
-            setBets(prev => [...prev, ...newBets]);
-            setShowPricePopup(false);
-            setTempBetData(null);
-            setSelectedNumbers([]);
-            return;
-        }
+                addToWinningAmount,
+                freePlay,
+                discount,
+            },
+        ]);
+    }
 
+    function makeEven(n) {
+        return n % 2 === 0 ? n : n + 1;
+    }
 
-        const newBet = {
-            date: new Date().toLocaleString("en-GB"),
-            ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-            game_name,
-            bet_type,
-            numbers: [...selectedNumbers],
-            amount: price,
-            bonus: false,
-        };
-
-        setBets(prev => [...prev, newBet]);
+    function resetTempState() {
         setShowPricePopup(false);
         setTempBetData(null);
         setSelectedNumbers([]);
-    };
+        setPrice(0);
+    }
 
     const confirmBetBon = () => {
         if (!tempBetData) return;
 
         const { game_name, bet_type } = tempBetData;
-        const lineCount = calculateLines(selectedNumbers, bet_type);
-        const bonusAmount = parseFloat(cdd.bonus_amount);
 
-        if (lineCount === 1 && bonusAmount < 1) {
-            toast.error("For 1 line, minimum bet is $1");
-            return;
-        }
-
-        if (lineCount >= 3) {
-            let rawAmount = lineCount * 0.5;
-            let rounded = Math.ceil(rawAmount);
-
-            if (rounded % 2 !== 0) {
-                rounded += 1;
-            }
-
-            if (bonusAmount < rounded) {
-                toast.error(`For ${lineCount} lines, minimum bonus is $${rounded}`);
-                return;
-            }
-        }
-
+        // ✅ If BONUS type, add one bet per number (no validation)
         if (bet_type === "BONUS") {
-            const perLinePrice = price / selectedNumbers.length; // split amount equally
+            const perLinePrice = price > 0
+                ? price / selectedNumbers.length
+                : discount / selectedNumbers.length; // fallback to discount if price is 0
+
             const newBets = selectedNumbers.map((num) => ({
                 date: new Date().toLocaleString("en-GB"),
                 ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
                 game_name,
                 bet_type,
-                numbers: [num],   // <-- only 1 number per bet
+                numbers: [num],
                 amount: perLinePrice,
-                bonus: true,
+                bonus: true,  // ✅ mark as bonus
+                addToWinningAmount,
+                freePlay,
+                discount,
             }));
-            setBets(prev => [...prev, ...newBets]);
-            setShowPricePopup(false);
-            setTempBetData(null);
-            setSelectedNumbers([]);
-            return;
+
+            setBets((prev) => [...prev, ...newBets]);
+        }
+        else {
+            // ✅ For other bet types, just add as single bonus bet
+            const newBet = {
+                date: new Date().toLocaleString("en-GB"),
+                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                game_name,
+                bet_type,
+                numbers: [...selectedNumbers],
+                amount: discount > 0 ? discount : price,
+                bonus: true,
+                addToWinningAmount,
+                freePlay,
+                discount,
+            };
+
+            setBets((prev) => [...prev, newBet]);
         }
 
-        const newBet = {
-            date: new Date().toLocaleString("en-GB"),
-            ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-            game_name,
-            bet_type,
-            numbers: [...selectedNumbers],
-            amount: bonusAmount,
-            bonus: true,
-        };
-
-        setBets(prev => [...prev, newBet]);
+        // ✅ Reset states after adding bet
         setShowPricePopup(false);
         setTempBetData(null);
         setSelectedNumbers([]);
+        setPrice(0);
     };
-
 
     const cancelBet = () => {
         setTempBetData(null);
@@ -372,12 +311,93 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
         const gameRules = payoutRulesByGame[bet.game_name] || {};
         if (bet.bet_type === "JACKPOT") return gameRules.JACKPOT || 0;
         const multiplier = gameRules[bet.bet_type] || 0;
-        console.log(bet, gameRules, multiplier);
         return bet.amount * multiplier;
     }
 
+    const [showDiscountPopup, setShowDiscountPopup] = useState(false);
+    const [addToWinningAmount, setAddToWinningAmount] = useState(false);
+    const [freePlay, setAddFreePlay] = useState(false);
+    const [discount, setDiscount] = useState(0);
+
+    function calculateTotalDiscount(bets) {
+        if (!Array.isArray(bets)) return "0.00";
+
+        // only bets of the requested game
+        const gameBets = bets.filter(bet => bet.game_name === "Big Six");
+
+        // if any bonus inside THIS game, discount for THIS game = 0
+        const hasBonusInGame = gameBets.some(bet => bet.bonus === true);
+
+        let total = 0;
+        if (!hasBonusInGame) {
+            total = gameBets.reduce((sum, bet) => {
+                const discountRate = discountRules[bet.bet_type] || 0;
+                const amount = Number(bet.amount) || 0;
+                if (discountRate > 0 && amount >= 5) {
+                    sum += amount * discountRate;
+                }
+                return sum; // always return accumulator
+            }, 0);
+        }
+
+        const finalTotal = total.toFixed(2);
+        // NOTE: set state with the computed value directly (state setters are async)
+        tDesDef(finalTotal);
+        setDiscount(finalTotal);
+
+        return finalTotal;
+    }
+
+    useEffect(() => {
+        const discount = calculateTotalDiscount(bets);
+        if (discount > 0) {
+            setShowDiscountPopup(true); // show popup
+        } else {
+            setShowDiscountPopup(false);
+        }
+    }, [bets]);
+
+    useEffect(() => {
+        setAddToWinningAmount(false);
+        setAddFreePlay(false);
+        setDiscount(0);
+    }, [destroy]);
+
     return (
         <div className="game-inner">
+            {showDiscountPopup && (
+                <div className="discount-popup-overlay">
+                    <div className="discount-popup">
+                        <h3>🎉 You have a discount of ${tDes}</h3>
+                        <p>How would you like to use it?</p>
+                        <div className="popup-buttons">
+                            <button
+                                className="submit"
+                                onClick={() => {
+                                    toast.success("Discount applied as free gameplay!");
+                                    setShowDiscountPopup(false);
+                                    setAddFreePlay(true);
+                                    setAddToWinningAmount(false);
+                                }}
+                            >
+                                Use for Free Play
+                            </button>
+                            <button
+                                className="bonus"
+                                onClick={() => {
+                                    toast.success("Discount will be added to your winnings!");
+                                    setShowDiscountPopup(false);
+                                    setAddFreePlay(false);
+                                    setAddToWinningAmount(true);
+                                }}
+                            >
+                                Add to Winning Amount
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* LEFT SIDE */}
             <div className="left">
                 <div className="left-top">
@@ -507,9 +527,10 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
                                             /L {calculateLines(e.numbers, e.bet_type)}
                                         </div>
                                     </div>
+                                    <div>{e.bonus ? "Bonus" : null}</div>
                                 </div>
                                 <div className="bet-right">
-                                    <div className="left">${e.amount.toFixed(2)}</div>
+                                    <div className="left">${e.amount}</div>
                                     <div className="right">/${(calculateWinnings(e)).toFixed(2)}</div>
                                 </div>
                                 <button className="delete" onClick={() => removeBet(i)}>
@@ -529,9 +550,8 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
                     <button className="clear" onClick={() => setBets([])}>
                         CLEAR ALL
                     </button>
-                    <button className="submit" onClick={handleSubmit}>
-                        SUBMIT
-                    </button>
+                    {(!freePlay || discount <= 0) && <button className="submit" onClick={handleSubmit}>SUBMIT</button>}
+                    {(freePlay && discount > 0) && <button className="submit" onClick={() => setShowDiscountPopup(true)}>USE BONUS</button>}
                 </div>
             </div>
 
@@ -558,13 +578,13 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
                             </div>
                             <h3>Select Price</h3>
                             {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
-                            <div className="bet-price-selection">
+                            {(!freePlay || discount <= 0) && <div className="bet-price-selection">
                                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
                                 <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
                                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
-                            </div>
+                            </div>}
 
-                            <div className="number-pad">
+                            {(!freePlay || discount <= 0) && <div className="number-pad">
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
                                     <button
                                         key={num}
@@ -575,12 +595,12 @@ export default function Lotto_Six({ bets, setBets, cdd, hS }) {
                                 ))}
                                 <button onClick={() => setPrice(Math.floor(price / 10))}>⌫</button>
                                 <button onClick={() => setPrice(0)}>Clear</button>
-                            </div>
+                            </div>}
 
                             <div className="popup-buttons">
-                                <button className="submit" onClick={confirmBet}>Submit</button>
+                                {(!freePlay || discount <= 0) && <button className="submit" onClick={confirmBet}>Submit</button>}
                                 <button className="cancel" onClick={cancelBet}>Cancel</button>
-                                {(cdd?.bonus_amount > 0 && tempBetData.bet_type != "C2+C3") && <button className="bonus" onClick={confirmBetBon}>Bonus {cdd?.bonus_amount}</button>}
+                                {(freePlay && tempBetData?.bet_type !== "C2+C3" && discount > 0) && <button className="bonus" onClick={confirmBetBon}>Bonus {discount}</button>}
                             </div>
                         </div>
                     </div>

@@ -1203,8 +1203,43 @@ body {
   justify-content: center;
 }
 
-.submit, .bonus {
+.submit,
+.bonus {
   padding: 10px;
+}
+
+.link {
+  position: relative;
+
+  .bonus-nof {
+    font-size: 10;
+    background-color: yellow;
+    color: black;
+    padding: 2px 4px;
+    position: absolute;
+    width: calc(100% - 50px);
+    top: 100%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+}
+
+.links {
+  .selected-link {
+    position: relative;
+
+    .bonus-nof {
+      font-size: 10;
+      background-color: yellow;
+      color: black;
+      padding: 2px 4px;
+      position: absolute;
+      width: calc(100% - 50px);
+      top: 100%;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+  }
 }
 
 .pop-up-bonus {

@@ -20,7 +20,10 @@ export default function Game({ cd, upNum }) {
     const [show, setShow] = useState(false);
     const [bonusOpen, setBonusOpen] = useState(true);
     const [openBa, setOpenBa] = useState(false);
-    const [totalDiscount, setTotalDiscount] = useState(0);
+    const [totalDiscountOne, setTotalDiscountOne] = useState(0);
+    const [totalDiscountTwo, setTotalDiscountTwo] = useState(0);
+    const [totalDiscountThree, setTotalDiscountThree] = useState(0);
+    const [totalDiscountFour, setTotalDiscountFour] = useState(0);
     const [destroyy, setDestroyy] = useState(1);
 
     useEffect(() => {
@@ -42,7 +45,7 @@ export default function Game({ cd, upNum }) {
                 bonus: item.bonus,
                 addToWin: item.addToWinningAmount,
                 freePlay: item.freePlay,
-                discount: totalDiscount
+                discount: parseFloat(totalDiscountOne) + parseFloat(totalDiscountTwo) + parseFloat(totalDiscountThree) + parseFloat(totalDiscountFour)
             })),
             "total_stake": betss.reduce((sum, item) => sum + item.amount, 0),
             "payment_method": "ACCOUNT_BALANCE",
@@ -52,6 +55,10 @@ export default function Game({ cd, upNum }) {
             setShow(true);
             upNum(Math.round(Math.random() * 999999))
             setDestroyy(Math.round(Math.random() * 999999))
+            setTotalDiscountOne(0);
+            setTotalDiscountTwo(0);
+            setTotalDiscountThree(0);
+            setTotalDiscountFour(0);
         }).catch((err) => toast.error("Something Went Wrong!!!", { onClick: () => window.open() }));
     };
 
@@ -68,7 +75,7 @@ export default function Game({ cd, upNum }) {
 
     return (
         <div className="game" style={{ backgroundImage: `url(${bgImg})` }}>
-            <GameNavigation />
+            <GameNavigation tdOne={totalDiscountOne} tdTwo={totalDiscountTwo} tdThree={totalDiscountThree} tdFour={totalDiscountFour} />
             {cd?.bonus_amount && bonusOpen ? (
                 <div className="pop-up-bonus">
                     <div className="bonus-card">
@@ -86,10 +93,10 @@ export default function Game({ cd, upNum }) {
                 </div>
             ) : null}
 
-            {currentLocation === "/game/lotto-dice" && <BigDice cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} tDes={totalDiscount} tDesDef={setTotalDiscount} destroy={destroyy} />}
-            {currentLocation === "/game/lotto-six" && <BigSix cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} />}
-            {currentLocation === "/game/lotto-max" && <BigMax cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} />}
-            {currentLocation === "/game/lotto-five" && <BigFive cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} />}
+            {currentLocation === "/game/lotto-dice" && <BigDice cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} tDes={totalDiscountOne} tDesDef={setTotalDiscountOne} destroy={destroyy} />}
+            {currentLocation === "/game/lotto-six" && <BigSix cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} tDes={totalDiscountTwo} tDesDef={setTotalDiscountTwo} destroy={destroyy} />}
+            {currentLocation === "/game/lotto-max" && <BigMax cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} tDes={totalDiscountThree} tDesDef={setTotalDiscountThree} destroy={destroyy} />}
+            {currentLocation === "/game/lotto-five" && <BigFive cdd={cd} bets={betss} setBets={setBetss} hS={handleSubmit} tDes={totalDiscountFour} tDesDef={setTotalDiscountFour} destroy={destroyy} />}
             {currentLocation === "/game/pick-two" && <Pick2Game />}
             {currentLocation === "/game/pick-three" && <Pick3Game />}
             {show && <BestOfLuckPopup show={show} onClose={() => setShow(false)} />}

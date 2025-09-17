@@ -41,7 +41,7 @@ export default function Pick3Game({
     const nums = [];
     while (nums.length < 3) {
       const n = Math.floor(Math.random() * 10);
-      if (!nums.includes(n)) nums.push(n); // avoid duplicates
+      if (!nums.includes(n)) nums.push(n);
     }
     updateLine(idx, "number1", nums[0]);
     updateLine(idx, "number2", nums[1]);

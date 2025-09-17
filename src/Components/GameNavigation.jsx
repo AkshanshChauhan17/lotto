@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const DEFAULT_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours
 
-export default function GameNavigation() {
+export default function GameNavigation({tdOne, tdTwo, tdThree, tdFour}) {
   const location = useLocation();
   const [select, setSelect] = useState(0);
   const [remaining, setRemaining] = useState(Math.floor(DEFAULT_DURATION_MS / 1000));
@@ -74,9 +74,18 @@ export default function GameNavigation() {
             onClick={() => setSelect(i)}
           >
             {e?.name}
+            {(e?.name === "Lotto Dice" && tdOne > 0) && <div className="bonus-nof">${tdOne}</div>}
+            {(e?.name === "Lotto Six" && tdTwo > 0) && <div className="bonus-nof">${tdTwo}</div>}
+            {(e?.name === "Lotto Max" && tdThree > 0) && <div className="bonus-nof">${tdThree}</div>}
+            {(e?.name === "Lotto Five" && tdFour > 0) && <div className="bonus-nof">${tdFour}</div>}
           </Link>
         ))}
       </div>
+
+      {tdOne} |
+      {tdTwo} |
+      {tdThree} |
+      {tdFour}
 
       <div className="right">
         <div className="title">Remaining time</div>
