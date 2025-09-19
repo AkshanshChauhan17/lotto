@@ -87,6 +87,7 @@ body {
 
       .link {
         @extend .game-links;
+        min-width: 60px;
       }
 
       .link:first-child {
@@ -1208,36 +1209,43 @@ body {
   padding: 10px;
 }
 
-.link {
-  position: relative;
+.game-navigation {
+  .links {
+    .link {
+      position: relative !important;
 
-  .bonus-nof {
-    font-size: 10;
-    background-color: yellow;
-    color: black;
-    padding: 2px 4px;
-    position: absolute;
-    width: calc(100% - 50px);
-    top: 100%;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+      .bonus-nof {
+        font-size: 10px;
+        background-color: yellow;
+        color: black;
+        padding: 2px 5px;
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        top: 100%;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+    }
   }
 }
 
-.links {
-  .selected-link {
-    position: relative;
+.game-navigation {
+  .links {
+    .selected-link {
+      position: relative !important;
 
-    .bonus-nof {
-      font-size: 10;
-      background-color: yellow;
-      color: black;
-      padding: 2px 4px;
-      position: absolute;
-      width: calc(100% - 50px);
-      top: 100%;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
+      .bonus-nof {
+        font-size: 14px;
+        background-color: yellow;
+        color: black;
+        padding: 2px 4px;
+        position: absolute;
+        width: calc(100% - 50px);
+        top: 100%;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
     }
   }
 }

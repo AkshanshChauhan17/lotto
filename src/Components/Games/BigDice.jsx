@@ -5,7 +5,7 @@ import { PiEmpty } from "react-icons/pi";
 import LiveTime from "../Time/LiveTime";
 import PopUpBlast from "../Animations/PopUpBlast";
 import { toast } from "react-toastify";
-import { driver } from "driver.js";
+import { flushSync } from "react-dom";
 
 function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => i + start);
@@ -155,58 +155,6 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         setPrice(0);
     }
 
-    const confirmBetBon = () => {
-        if (!tempBetData) return;
-
-        const { game_name, bet_type } = tempBetData;
-
-        // ✅ If BONUS type, add one bet per number (no validation)
-        if (bet_type === "BONUS") {
-            const perLinePrice = price > 0
-                ? price / selectedNumbers.length
-                : discount / selectedNumbers.length; // fallback to discount if price is 0
-
-            const newBets = selectedNumbers.map((num) => ({
-                date: new Date().toLocaleString("en-GB"),
-                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                game_name,
-                bet_type,
-                numbers: [num],
-                amount: perLinePrice,
-                bonus: true,  // ✅ mark as bonus
-                addToWinningAmount,
-                freePlay,
-                discount,
-            }));
-
-            setBets((prev) => [...prev, ...newBets]);
-        }
-        else {
-            // ✅ For other bet types, just add as single bonus bet
-            const newBet = {
-                date: new Date().toLocaleString("en-GB"),
-                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                game_name,
-                bet_type,
-                numbers: [...selectedNumbers],
-                amount: discount > 0 ? discount : price,
-                bonus: true,
-                addToWinningAmount,
-                freePlay,
-                discount,
-            };
-
-            setBets((prev) => [...prev, newBet]);
-        }
-
-        // ✅ Reset states after adding bet
-        setShowPricePopup(false);
-        setTempBetData(null);
-        setSelectedNumbers([]);
-        setPrice(0);
-    };
-
-
     // Cancel bet creation
     const cancelBet = () => {
         setTempBetData(null);
@@ -240,10 +188,6 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         setTimeout(() => {
             setPopup(false);
         }, 7000);
-    };
-
-    const handleSubmit = () => {
-        hS(openPop);
     };
 
     // Combination logic
@@ -281,7 +225,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
             default:
                 return 0;
         }
-    }
+    };
 
     // discount rules mapping [this is dummy we just make it call from api]
     const discountRules = {
@@ -313,12 +257,83 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         if (bet.bet_type === "JACKPOT") return gameRules.JACKPOT || 0;
         const multiplier = gameRules[bet.bet_type] || 0;
         return bet.amount * multiplier;
-    }
+    };
 
     const [showDiscountPopup, setShowDiscountPopup] = useState(false);
     const [addToWinningAmount, setAddToWinningAmount] = useState(false);
     const [freePlay, setAddFreePlay] = useState(false);
     const [discount, setDiscount] = useState(0);
+
+    const [priceBow, setPriceBow] = useState(0);
+
+    const updatePriceBow = () => {
+        if (discount > priceBow) {
+            const newPrice = discount - priceBow;
+            setDiscount(newPrice);
+            tDesDef(newPrice);
+        } else {
+            const newPriceRev = priceBow - discount;
+            setDiscount(newPriceRev);
+            tDesDef(newPriceRev);
+        };
+    };
+
+    const confirmBetBon = () => {
+        if (!tempBetData) return;
+
+        const { game_name, bet_type } = tempBetData;
+
+        // ✅ If BONUS type, add one bet per number (no validation)
+        if (bet_type === "BONUS") {
+            const perLinePrice = price > 0
+                ? price / selectedNumbers.length
+                : discount / selectedNumbers.length; // fallback to discount if price is 0
+
+            const newBets = selectedNumbers.map((num) => ({
+                date: new Date().toLocaleString("en-GB"),
+                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                game_name,
+                bet_type,
+                numbers: [num],
+                amount: perLinePrice,
+                bonus: true,  // ✅ mark as bonus
+                addToWinningAmount,
+                freePlay,
+                discount,
+            }));
+
+            setBets((prev) => [...prev, ...newBets]);
+        }
+        else {
+            // ✅ For other bet types, just add as single bonus bet
+            const newBet = {
+                date: new Date().toLocaleString("en-GB"),
+                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                game_name,
+                bet_type,
+                numbers: [...selectedNumbers],
+                amount: priceBow,
+                bonus: true,
+                addToWinningAmount,
+                freePlay,
+                discount,
+            };
+
+            setBets((prev) => [...prev, newBet]);
+        }
+
+        // ✅ Reset states after adding bet
+        setShowPricePopup(false);
+        setTempBetData(null);
+        setSelectedNumbers([]);
+        setPrice(0);
+        updatePriceBow();
+        setPriceBow(0);
+    };
+
+    const handleSubmit = () => {
+        hS(openPop);
+    };
 
     function calculateTotalDiscount(bets) {
         if (!Array.isArray(bets)) return "0.00";
@@ -326,36 +341,40 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         // only bets of the requested game
         const gameBets = bets.filter(bet => bet.game_name == "Big Dice");
 
-        // if any bonus inside THIS game, discount for THIS game = 0
-        const hasBonusInGame = gameBets.some(bet => bet.bonus === true);
-
         let total = 0;
-        if (!hasBonusInGame) {
-            total = gameBets.reduce((sum, bet) => {
+        total = gameBets.reduce((sum, bet) => {
+            if (!bet.bonus) {
                 const discountRate = discountRules[bet.bet_type] || 0;
                 const amount = Number(bet.amount) || 0;
                 if (discountRate > 0 && amount >= 5) {
                     sum += amount * discountRate;
                 }
-                return sum; // always return accumulator
-            }, 0);
-        }
+            } else {
+                const amountBo = Number(bet.amount) || 0;
+                sum -= amountBo;
+            }
+            return sum; // always return accumulator
+        }, 0);
 
-        const finalTotal = total.toFixed(2);
-        // NOTE: set state with the computed value directly (state setters are async)
-        tDesDef(finalTotal);
-        setDiscount(finalTotal);
+        const finalTotal = parseFloat(total.toFixed(2));
+        tDesDef((finalTotal - priceBow).toFixed(1));
+        setDiscount((finalTotal - priceBow).toFixed(1));
 
         return finalTotal;
-    }
+    };
 
-    useEffect(() => {
+    const onSubmit = () => {
         const discount = calculateTotalDiscount(bets);
         if (discount > 0) {
             setShowDiscountPopup(true); // show popup
         } else {
             setShowDiscountPopup(false);
+            handleSubmit();
         }
+    };
+
+    useEffect(() => {
+        calculateTotalDiscount(bets);
     }, [bets]);
 
     useEffect(() => {
@@ -363,6 +382,15 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         setAddFreePlay(false);
         setDiscount(0);
     }, [destroy]);
+
+    function applyFreePlay() {
+        toast.success("Discount applied as free gameplay!");
+        flushSync(() => {
+            setShowDiscountPopup(false);
+            setAddFreePlay(true);
+            setAddToWinningAmount(false);
+        });
+    };
 
     return (
         <div className="game-inner">
@@ -374,14 +402,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                         <div className="popup-buttons">
                             <button
                                 className="submit"
-                                onClick={() => {
-                                    toast.success("Discount applied as free gameplay!");
-                                    setShowDiscountPopup(false);
-                                    setAddFreePlay(true);
-                                    setAddToWinningAmount(false);
-
-                                    // Here you could trigger free bet logic or auto-add new bet with discount
-                                }}
+                                onClick={() => applyFreePlay()}
                             >
                                 Use for Free Play
                             </button>
@@ -392,7 +413,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                                     setShowDiscountPopup(false);
                                     setAddFreePlay(false);
                                     setAddToWinningAmount(true);
-                                    // You can store this choice in state and later add discount to payout
+                                    handleSubmit();
                                 }}
                             >
                                 Add to Winning Amount
@@ -530,7 +551,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                 </div>
                 <div className="selected-controls">
                     <button className="clear" onClick={() => setBets([])}>CLEAR ALL</button>
-                    {(!freePlay || discount <= 0) && <button className="submit step-5" onClick={() => { handleSubmit() }}>SUBMIT</button>}
+                    {(!freePlay || discount <= 0) && <button className="submit step-5" onClick={() => { onSubmit() }}>SUBMIT</button>}
                     {(freePlay && discount > 0) && <button className="submit step-5" onClick={() => setShowDiscountPopup(true)}>USE BONUS</button>}
                 </div>
             </div>
@@ -558,10 +579,15 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                             </div>
                             <h3>Select Price</h3>
                             {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
-                            {(!freePlay || discount <= 0) && <div className="bet-price-selection">
+                            {(!freePlay || discount <= 0) ? <div className="bet-price-selection">
                                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
                                 <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
                                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
+                            </div> : <div className="bet-price-selection">
+                                <div style={{ height: "100%", backgroundColor: "yellow", padding: "15px", borderRadius: 10, fontWeight: 700, outline: "2px solid black" }}>FREE PLAY</div>
+                                <button onClick={() => priceBow >= 1.1 && setPriceBow(priceBow - 0.1)}>${parseFloat(priceBow - 0.1).toFixed(1)}</button>
+                                <div className="input">${priceBow.toFixed(1)}</div>
+                                <button onClick={() => priceBow <= discount - 0.1 && setPriceBow(priceBow + 0.1).toFixed(1)}>${parseFloat(priceBow + 0.1).toFixed(1)}</button>
                             </div>}
 
                             {(!freePlay || discount <= 0) && <div className="number-pad">
@@ -579,8 +605,8 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
 
                             <div className="popup-buttons">
                                 {(!freePlay || discount <= 0) && <button className="submit" onClick={confirmBet}>Submit</button>}
-                                <button className="cancel" onClick={cancelBet}>Cancel</button>
-                                {(freePlay && tempBetData.bet_type != "C2+C3" && discount > 0) && <button className="bonus step-3" onClick={confirmBetBon}>Bonus {discount}</button>}
+                                <button className="cancel" onClick={cancelBet}>{(freePlay && tempBetData.bet_type === "C2+C3" && discount > 0) ? "Discount is not applicable for this bet" : "Cancel"}</button>
+                                {(freePlay && tempBetData.bet_type != "C2+C3" && discount > 0) && <button className="bonus step-3" onClick={confirmBetBon}>Bonus {priceBow}</button>}
                             </div>
                         </div>
                     </div>

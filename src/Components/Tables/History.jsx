@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 export default function GameHistory({
-  apiUrl = "http://72.60.71.162:5000/api/tickets",
+  apiUrl = "http://localhost:5000/api/tickets",
   customerId = localStorage.guid,
 }) {
   const [history, setHistory] = useState([]);
