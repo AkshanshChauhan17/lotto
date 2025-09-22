@@ -11,7 +11,7 @@ const INITIAL_LINE = {
 };
 
 export default function Pick3Game({
-  apiUrl = "http://localhost:5000/api/tickets",
+  apiUrl = "http://72.60.71.162:5000/api/tickets",
   customerId = localStorage.guid,
   storeId = null,
   gameId = 6,

@@ -244,13 +244,13 @@ export default function BigFive({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
             C1: 5, C2: 35, C3: 300, C4: 640, BONUS: 30, JACKPOT: 30000
         },
         "Big Six": {
-            C1: 7, C2: 50, C3: 550, C4: 640, BONUS: 42, JACKPOT: 30000
+            C1: 7, C2: 50, C3: 550, C4: 640, BONUS: 30, JACKPOT: 30000
         },
         "Big Max": {
-            C1: 7, C2: 35, C3: 200, C4: 640, BONUS: 42, JACKPOT: 30000
+            C1: 7, C2: 35, C3: 200, C4: 640, BONUS: 30, JACKPOT: 30000
         },
         "Big Five": {
-            C1: 7, C2: 70, C3: 800, C4: 640, BONUS: 42, JACKPOT: 30000
+            C1: 7, C2: 70, C3: 800, C4: 640, BONUS: 30, JACKPOT: 30000
         }
     };
 
