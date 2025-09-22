@@ -530,7 +530,7 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                                         <div className="b-left">{e.bet_type}</div>
                                         <div className="b-right">/L {calculateLines(e.numbers, e.bet_type)}</div>
                                     </div>
-                                    <div>{e.bonus ? "Bonus" : null}</div>
+                                    <div>{e.bonus ? <div style={{padding: "0px 10px", borderRadius: "10px", outline: "1px solid blue", backgroundColor: "lightblue", fontWeight: 500, fontSize: 12, textAlign: "center", marginTop: "5px"}}>Bonus</div> : null}</div>
                                 </div>
                                 <div className="bet-right">
                                     <div className="left">${e.amount}</div>
