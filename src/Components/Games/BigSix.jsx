@@ -5,6 +5,7 @@ import { PiEmpty } from "react-icons/pi";
 import LiveTime from "../Time/LiveTime";
 import PopUpBlast from "../Animations/PopUpBlast";
 import { toast } from "react-toastify";
+import { flushSync } from "react-dom";
 
 function range(start, end) {
     return Array.from({ length: end - start + 1 }, (_, i) => i + start);
@@ -17,7 +18,7 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
     const [price, setPrice] = useState(0);
     const [popup, setPopup] = useState(false);
 
-    // Bet rules (adjust if Lotto Six has different rules)
+    // Bet rules mapping
     const betRules = {
         C1: { min: 1, max: 10 },
         C2: { min: 2, max: 10 },
@@ -156,57 +157,7 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
         setPrice(0);
     }
 
-    const confirmBetBon = () => {
-        if (!tempBetData) return;
-
-        const { game_name, bet_type } = tempBetData;
-
-        // ✅ If BONUS type, add one bet per number (no validation)
-        if (bet_type === "BONUS") {
-            const perLinePrice = price > 0
-                ? price / selectedNumbers.length
-                : discount / selectedNumbers.length; // fallback to discount if price is 0
-
-            const newBets = selectedNumbers.map((num) => ({
-                date: new Date().toLocaleString("en-GB"),
-                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                game_name,
-                bet_type,
-                numbers: [num],
-                amount: perLinePrice,
-                bonus: true,  // ✅ mark as bonus
-                addToWinningAmount,
-                freePlay,
-                discount,
-            }));
-
-            setBets((prev) => [...prev, ...newBets]);
-        }
-        else {
-            // ✅ For other bet types, just add as single bonus bet
-            const newBet = {
-                date: new Date().toLocaleString("en-GB"),
-                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
-                game_name,
-                bet_type,
-                numbers: [...selectedNumbers],
-                amount: discount > 0 ? discount : price,
-                bonus: true,
-                addToWinningAmount,
-                freePlay,
-                discount,
-            };
-
-            setBets((prev) => [...prev, newBet]);
-        }
-
-        // ✅ Reset states after adding bet
-        setShowPricePopup(false);
-        setTempBetData(null);
-        setSelectedNumbers([]);
-        setPrice(0);
-    };
-
+    // Cancel bet creation
     const cancelBet = () => {
         setTempBetData(null);
         setPrice(1);
@@ -215,15 +166,15 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
     };
 
     const removeBet = (index) => {
-        setBets((prev) => prev.filter((_, i) => i !== index));
+        setBets(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleSelect = (num) => {
         if (selectedNumbers.includes(num)) {
-            setSelectedNumbers(selectedNumbers.filter((n) => n !== num));
+            setSelectedNumbers(selectedNumbers.filter(n => n !== num));
         } else {
-            if (selectedNumbers.length >= 12) {
-                toast.error("You can only select up to 12 numbers.");
+            if (selectedNumbers.length >= 10) {
+                toast.error("You can only select up to 10 numbers.");
                 return;
             }
             setSelectedNumbers([...selectedNumbers, num]);
@@ -239,10 +190,6 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
         setTimeout(() => {
             setPopup(false);
         }, 7000);
-    };
-
-    const handleSubmit = () => {
-        hS(openPop);
     };
 
     // Combination logic
@@ -280,16 +227,16 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
             default:
                 return 0;
         }
-    }
+    };
 
-    // Discount rules mapping [this is dummy we just make it call from api]
+    // discount rules mapping [this is dummy we just make it call from api]
     const discountRules = {
         C1: 0.10,     // 10%
         C2: 0.10,
         C3: 0.20,     // 20%
         BONUS: 0.10,
-        C4: 0.10,     // no discount
-        "C2+C3": 0.15 // 15% for example
+        C4: 0.10,
+        "C2+C3": 0.15 // 15%
     };
 
     const payoutRulesByGame = {
@@ -319,42 +266,117 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
     const [freePlay, setAddFreePlay] = useState(false);
     const [discount, setDiscount] = useState(0);
 
+    const [priceBow, setPriceBow] = useState(0);
+
+    const updatePriceBow = () => {
+        if (discount > priceBow) {
+            const newPrice = discount - priceBow;
+            setDiscount(newPrice);
+            tDesDef(newPrice);
+        } else {
+            const newPriceRev = priceBow - discount;
+            setDiscount(newPriceRev);
+            tDesDef(newPriceRev);
+        };
+    };
+
+    const confirmBetBon = () => {
+        if (!tempBetData) return;
+
+        const { game_name, bet_type } = tempBetData;
+
+        // ✅ If BONUS type, add one bet per number (no validation)
+        if (bet_type === "BONUS") {
+            const perLinePrice = price > 0
+                ? price / selectedNumbers.length
+                : discount / selectedNumbers.length; // fallback to discount if price is 0
+
+            const newBets = selectedNumbers.map((num) => ({
+                date: new Date().toLocaleString("en-GB"),
+                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                game_name,
+                bet_type,
+                numbers: [num],
+                amount: perLinePrice,
+                bonus: true,  // ✅ mark as bonus
+                addToWinningAmount,
+                freePlay,
+                discount,
+            }));
+
+            setBets((prev) => [...prev, ...newBets]);
+        }
+        else {
+            // ✅ For other bet types, just add as single bonus bet
+            const newBet = {
+                date: new Date().toLocaleString("en-GB"),
+                ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
+                game_name,
+                bet_type,
+                numbers: [...selectedNumbers],
+                amount: priceBow,
+                bonus: true,
+                addToWinningAmount,
+                freePlay,
+                discount,
+            };
+
+            setBets((prev) => [...prev, newBet]);
+        }
+
+        // ✅ Reset states after adding bet
+        setShowPricePopup(false);
+        setTempBetData(null);
+        setSelectedNumbers([]);
+        setPrice(0);
+        updatePriceBow();
+        setPriceBow(0);
+    };
+
+    const handleSubmit = () => {
+        hS(openPop);
+    };
+
     function calculateTotalDiscount(bets) {
         if (!Array.isArray(bets)) return "0.00";
 
         // only bets of the requested game
-        const gameBets = bets.filter(bet => bet.game_name === "Big Six");
-
-        // if any bonus inside THIS game, discount for THIS game = 0
-        const hasBonusInGame = gameBets.some(bet => bet.bonus === true);
+        const gameBets = bets.filter(bet => bet.game_name == "Big Six");
 
         let total = 0;
-        if (!hasBonusInGame) {
-            total = gameBets.reduce((sum, bet) => {
+        total = gameBets.reduce((sum, bet) => {
+            if (!bet.bonus) {
                 const discountRate = discountRules[bet.bet_type] || 0;
                 const amount = Number(bet.amount) || 0;
                 if (discountRate > 0 && amount >= 5) {
                     sum += amount * discountRate;
                 }
-                return sum; // always return accumulator
-            }, 0);
-        }
+            } else {
+                const amountBo = Number(bet.amount) || 0;
+                sum -= amountBo;
+            }
+            return sum; // always return accumulator
+        }, 0);
 
-        const finalTotal = total.toFixed(2);
-        // NOTE: set state with the computed value directly (state setters are async)
-        tDesDef(finalTotal);
-        setDiscount(finalTotal);
+        const finalTotal = parseFloat(total.toFixed(2));
+        tDesDef((finalTotal - priceBow).toFixed(1));
+        setDiscount((finalTotal - priceBow).toFixed(1));
 
         return finalTotal;
-    }
+    };
 
-    useEffect(() => {
+    const onSubmit = () => {
         const discount = calculateTotalDiscount(bets);
         if (discount > 0) {
             setShowDiscountPopup(true); // show popup
         } else {
             setShowDiscountPopup(false);
+            handleSubmit();
         }
+    };
+
+    useEffect(() => {
+        calculateTotalDiscount(bets);
     }, [bets]);
 
     useEffect(() => {
@@ -362,6 +384,15 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
         setAddFreePlay(false);
         setDiscount(0);
     }, [destroy]);
+
+    function applyFreePlay() {
+        toast.success("Discount applied as free gameplay!");
+        flushSync(() => {
+            setShowDiscountPopup(false);
+            setAddFreePlay(true);
+            setAddToWinningAmount(false);
+        });
+    };
 
     return (
         <div className="game-inner">
@@ -373,12 +404,7 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                         <div className="popup-buttons">
                             <button
                                 className="submit"
-                                onClick={() => {
-                                    toast.success("Discount applied as free gameplay!");
-                                    setShowDiscountPopup(false);
-                                    setAddFreePlay(true);
-                                    setAddToWinningAmount(false);
-                                }}
+                                onClick={() => applyFreePlay()}
                             >
                                 Use for Free Play
                             </button>
@@ -389,6 +415,7 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                                     setShowDiscountPopup(false);
                                     setAddFreePlay(false);
                                     setAddToWinningAmount(true);
+                                    handleSubmit();
                                 }}
                             >
                                 Add to Winning Amount
@@ -398,7 +425,6 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                 </div>
             )}
 
-            {/* LEFT SIDE */}
             <div className="left">
                 <div className="left-top">
                     <div className="head">
@@ -417,17 +443,12 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                         </div>
                         <div className="smt">{selectedNumbers.length}/10</div>
                     </div>
-                    <div className="left-matrix">
-                        {range(
-                            game_matrix[1].lotto_six.clickable_numbers[0],
-                            game_matrix[1].lotto_six.clickable_numbers[1]
-                        ).map((e, i) => (
+                    <div className="left-matrix step-1">
+                        {range(game_matrix[1].lotto_six.clickable_numbers[0], game_matrix[1].lotto_six.clickable_numbers[1]).map((e, i) => (
                             <button
                                 className="matrix-selector"
                                 style={{
-                                    backgroundColor: selectedNumbers.includes(e)
-                                        ? "#1CA5FB"
-                                        : "",
+                                    backgroundColor: selectedNumbers.includes(e) ? "#1CA5FB" : "",
                                     color: selectedNumbers.includes(e) ? "white" : ""
                                 }}
                                 key={i}
@@ -436,24 +457,18 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                                 {e}
                             </button>
                         ))}
-                        {range(
-                            game_matrix[1].lotto_six.disabled_numbers[0],
-                            game_matrix[1].lotto_six.disabled_numbers[1]
-                        ).map((e, i) => (
-                            <button className="matrix-selector" key={i} disabled>
-                                {e}
-                            </button>
+                        {range(game_matrix[1].lotto_six.disabled_numbers[0], game_matrix[1].lotto_six.disabled_numbers[1]).map((e, i) => (
+                            <button className="matrix-selector" key={i} disabled>{e}</button>
                         ))}
                     </div>
                 </div>
 
-                {/* BET TYPE CONTROLLERS */}
                 <div className="left-bottom">
                     <div className="head">
                         <div className="smt">Choose bet type</div>
                     </div>
                     <div className="controller">
-                        <div className="left-controllers-row-one">
+                        <div className="left-controllers-row-one step-2">
                             {game_matrix[1].lotto_six.controllers.row_one.map((e, i) => (
                                 <button
                                     key={i}
@@ -468,50 +483,40 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                         <div className="left-controllers-row-two">
                             {game_matrix[1].lotto_six.controllers.row_two.map((e, i) => {
                                 if (e.name === "CANCEL") {
-                                    return (
-                                        <button
-                                            key={i}
-                                            className="left-controller"
-                                            style={{
-                                                backgroundColor:
-                                                    selectedNumbers.length <= 0 ? "" : "#E20303",
-                                                color: selectedNumbers.length <= 0 ? "" : "white"
-                                            }}
-                                            disabled={selectedNumbers.length <= 0}
-                                            onClick={handleCancel}
-                                        >
-                                            {e.name}
-                                        </button>
-                                    );
-                                }
-                                return (
-                                    <button
+                                    return <button
                                         key={i}
                                         className="left-controller"
-                                        disabled={e.disabled}
-                                        onClick={() => handleBetTypeClick("Big Six", e.name)}
+                                        style={{ backgroundColor: selectedNumbers.length <= 0 ? "" : "#E20303", color: selectedNumbers.length <= 0 ? "" : "white" }}
+                                        disabled={selectedNumbers.length <= 0}
+                                        onClick={() => handleCancel()}
                                     >
                                         {e.name}
                                     </button>
-                                );
+                                }
+                                return <button
+                                    key={i}
+                                    className="left-controller step-2"
+                                    disabled={e.disabled}
+                                    onClick={() => handleBetTypeClick("Big Six", e.name)}
+                                >
+                                    {e.name}
+                                </button>
                             })}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* RIGHT SIDE - CART */}
+            {/* ✅ Cart View */}
             <div className="right">
                 <div className="head">
                     <div className="left-text">Selected bets</div>
                     <div className="right-text">{bets.length}/10</div>
                 </div>
-                <div className="selected-cart">
-                    {bets.length <= 0 && (
-                        <div className="empty">
-                            Empty Cart!<PiEmpty className="empty-icon" />
-                        </div>
-                    )}
+                <div className="selected-cart step-4">
+                    {
+                        bets.length <= 0 && <div className="empty">Empty Cart!<PiEmpty className="empty-icon" /></div>
+                    }
                     {bets.map((e, i) => (
                         <div className="bet-ar" key={i}>
                             <div className="bet">
@@ -523,9 +528,7 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                                     <div className="top">{e.game_name}</div>
                                     <div className="bottom">
                                         <div className="b-left">{e.bet_type}</div>
-                                        <div className="b-right">
-                                            /L {calculateLines(e.numbers, e.bet_type)}
-                                        </div>
+                                        <div className="b-right">/L {calculateLines(e.numbers, e.bet_type)}</div>
                                     </div>
                                     <div>{e.bonus ? "Bonus" : null}</div>
                                 </div>
@@ -533,25 +536,25 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                                     <div className="left">${e.amount}</div>
                                     <div className="right">/${(calculateWinnings(e)).toFixed(2)}</div>
                                 </div>
-                                <button className="delete" onClick={() => removeBet(i)}>
+                                <button className="delete" onClick={() => { bets.filter(bet => bet.bonus === true) && !e.bonus ? toast.warning("Please remove all bonus bets first.") : removeBet(i); }}>
                                     <AiFillDelete className="delete-icon" />
                                 </button>
                             </div>
                             <div className="bottom-numbers">
                                 <b>Selected Numbers:</b>
                                 {e.numbers && (
-                                    <div className="b-numbers">{e.numbers.join(", ")}</div>
+                                    <div className="b-numbers">
+                                        {e.numbers.join(", ")}
+                                    </div>
                                 )}
                             </div>
                         </div>
                     ))}
                 </div>
                 <div className="selected-controls">
-                    <button className="clear" onClick={() => setBets([])}>
-                        CLEAR ALL
-                    </button>
-                    {(!freePlay || discount <= 0) && <button className="submit" onClick={handleSubmit}>SUBMIT</button>}
-                    {(freePlay && discount > 0) && <button className="submit" onClick={() => setShowDiscountPopup(true)}>USE BONUS</button>}
+                    <button className="clear" onClick={() => setBets([])}>CLEAR ALL</button>
+                    {(!freePlay || discount <= 0) && <button className="submit step-5" onClick={() => { onSubmit() }}>SUBMIT</button>}
+                    {(freePlay && discount > 0) && <button className="submit step-5" onClick={() => setShowDiscountPopup(true)}>USE BONUS</button>}
                 </div>
             </div>
 
@@ -578,11 +581,33 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
                             </div>
                             <h3>Select Price</h3>
                             {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
-                            {(!freePlay || discount <= 0) && <div className="bet-price-selection">
+                            {(!freePlay || discount <= 0) ? <div className="bet-price-selection">
                                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
                                 <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
                                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
-                            </div>}
+                            </div> : <div className="bet-price-selection">
+                                <div style={{
+                                    height: "100%",
+                                    backgroundColor: "yellow",
+                                    padding: "15px",
+                                    borderRadius: 10,
+                                    fontWeight: 700,
+                                    outline: "2px solid black"
+                                }}>FREE PLAY</div>
+
+                                {/* 👇 Keep the math clean */}
+                                <button onClick={() => priceBow >= 0.1 && setPriceBow(prev => parseFloat((prev - 0.1).toFixed(1)))}>
+                                    ${parseFloat(priceBow - 0.1).toFixed(1)}
+                                </button>
+
+                                {/* 👇 Only format for display */}
+                                <div className="input">${priceBow.toFixed(1)}</div>
+
+                                <button onClick={() => priceBow <= discount - 0.1 && setPriceBow(prev => parseFloat((prev + 0.1).toFixed(1)))}>
+                                    ${parseFloat(priceBow + 0.1).toFixed(1)}
+                                </button>
+                            </div>
+                            }
 
                             {(!freePlay || discount <= 0) && <div className="number-pad">
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
@@ -599,8 +624,8 @@ export default function BigSix({ bets, setBets, cdd, hS, tDes, tDesDef, destroy 
 
                             <div className="popup-buttons">
                                 {(!freePlay || discount <= 0) && <button className="submit" onClick={confirmBet}>Submit</button>}
-                                <button className="cancel" onClick={cancelBet}>Cancel</button>
-                                {(freePlay && tempBetData?.bet_type !== "C2+C3" && discount > 0) && <button className="bonus" onClick={confirmBetBon}>Bonus {discount}</button>}
+                                <button className="cancel" onClick={cancelBet}>{(freePlay && tempBetData.bet_type === "C2+C3" && discount > 0) ? "Discount is not applicable for this bet" : "Cancel"}</button>
+                                {(freePlay && tempBetData.bet_type != "C2+C3" && discount > 0) && <button className="bonus step-3" onClick={confirmBetBon}>Bonus {priceBow}</button>}
                             </div>
                         </div>
                     </div>

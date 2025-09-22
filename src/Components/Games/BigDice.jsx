@@ -257,7 +257,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         if (bet.bet_type === "JACKPOT") return gameRules.JACKPOT || 0;
         const multiplier = gameRules[bet.bet_type] || 0;
         return bet.amount * multiplier;
-    };
+    }
 
     const [showDiscountPopup, setShowDiscountPopup] = useState(false);
     const [addToWinningAmount, setAddToWinningAmount] = useState(false);
@@ -534,7 +534,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                                     <div className="left">${e.amount}</div>
                                     <div className="right">/${(calculateWinnings(e)).toFixed(2)}</div>
                                 </div>
-                                <button className="delete" onClick={() => removeBet(i)}>
+                                <button className="delete" onClick={() => { bets.filter(bet => bet.bonus === true) && !e.bonus ? toast.warning("Please remove all bonus bets first.") : removeBet(i); }}>
                                     <AiFillDelete className="delete-icon" />
                                 </button>
                             </div>
@@ -584,11 +584,28 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                                 <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
                                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
                             </div> : <div className="bet-price-selection">
-                                <div style={{ height: "100%", backgroundColor: "yellow", padding: "15px", borderRadius: 10, fontWeight: 700, outline: "2px solid black" }}>FREE PLAY</div>
-                                <button onClick={() => priceBow >= 1.1 && setPriceBow(priceBow - 0.1)}>${parseFloat(priceBow - 0.1).toFixed(1)}</button>
+                                <div style={{
+                                    height: "100%",
+                                    backgroundColor: "yellow",
+                                    padding: "15px",
+                                    borderRadius: 10,
+                                    fontWeight: 700,
+                                    outline: "2px solid black"
+                                }}>FREE PLAY</div>
+
+                                {/* 👇 Keep the math clean */}
+                                <button onClick={() => priceBow >= 0.1 && setPriceBow(prev => parseFloat((prev - 0.1).toFixed(1)))}>
+                                    ${parseFloat(priceBow - 0.1).toFixed(1)}
+                                </button>
+
+                                {/* 👇 Only format for display */}
                                 <div className="input">${priceBow.toFixed(1)}</div>
-                                <button onClick={() => priceBow <= discount - 0.1 && setPriceBow(priceBow + 0.1).toFixed(1)}>${parseFloat(priceBow + 0.1).toFixed(1)}</button>
-                            </div>}
+
+                                <button onClick={() => priceBow <= discount - 0.1 && setPriceBow(prev => parseFloat((prev + 0.1).toFixed(1)))}>
+                                    ${parseFloat(priceBow + 0.1).toFixed(1)}
+                                </button>
+                            </div>
+                            }
 
                             {(!freePlay || discount <= 0) && <div className="number-pad">
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (

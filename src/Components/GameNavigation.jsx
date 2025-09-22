@@ -82,11 +82,6 @@ export default function GameNavigation({tdOne, tdTwo, tdThree, tdFour}) {
         ))}
       </div>
 
-      {tdOne} |
-      {tdTwo} |
-      {tdThree} |
-      {tdFour}
-
       <div className="right">
         <div className="title">Remaining time</div>
         <div className="time-ar">

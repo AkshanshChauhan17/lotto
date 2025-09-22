@@ -31,6 +31,22 @@ export default function Game({ cd, upNum }) {
     }, [location]);
 
     const handleSubmit = (oP) => {
+        if (totalDiscountOne > 0) {
+            toast.error("There is total Discount for Lotto Dice");
+            return 0;
+        }
+        if (totalDiscountTwo > 0) {
+            toast.error("There is total Discount for Lotto Six");
+            return 0;
+        }
+        if (totalDiscountThree > 0) {
+            toast.error("There is total Discount for Lotto Max");
+            return 0;
+        }
+        if (totalDiscountFour > 0) {
+            toast.error("There is total Discount for Lotto Five");
+            return 0;
+        }
         api.post("/tickets", {
             "id": localStorage.guid,
             "customer_id": localStorage.guid,
