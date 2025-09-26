@@ -155,7 +155,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
 
         // Normal flow for other bets
         setTempBetData({ game_name, bet_type });
-        setPrice(1);
+        setPrice(0);
         setShowPricePopup(true);
     };
 
