@@ -74,10 +74,6 @@ export default function GameNavigation({tdOne, tdTwo, tdThree, tdFour}) {
             onClick={() => setSelect(i)}
           >
             {e?.name}
-            {(e?.name === "Lotto Dice" && tdOne > 0) && <div className="bonus-nof">${tdOne}</div>}
-            {(e?.name === "Lotto Six" && tdTwo > 0) && <div className="bonus-nof">${tdTwo}</div>}
-            {(e?.name === "Lotto Max" && tdThree > 0) && <div className="bonus-nof">${tdThree}</div>}
-            {(e?.name === "Lotto Five" && tdFour > 0) && <div className="bonus-nof">${tdFour}</div>}
           </Link>
         ))}
       </div>

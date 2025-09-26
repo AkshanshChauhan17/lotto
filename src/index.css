@@ -4,3 +4,313 @@
   font-family: 'Segoe UI';
   transition-duration: 0.0s;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Big Dice Game Styles */
+.game-container {
+  @apply w-full;
+}
+
+.game-content {
+  @apply flex gap-6 flex-col lg:flex-row;
+}
+
+.game-left {
+  @apply flex-1 space-y-6;
+}
+
+.game-right {
+  @apply w-full lg:w-96 bg-gray-50 rounded-lg p-4;
+}
+
+.section-header {
+  @apply flex flex-wrap items-center justify-between gap-4 mb-4;
+}
+
+.section-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.auto-pick-section {
+  @apply flex items-center gap-2 flex-wrap;
+}
+
+.auto-pick-label {
+  @apply text-sm text-gray-600 whitespace-nowrap;
+}
+
+.auto-pick-buttons {
+  @apply flex gap-1 flex-wrap;
+}
+
+.auto-pick-btn {
+  @apply px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200 transition-colors;
+}
+
+.selection-counter {
+  @apply text-sm font-medium text-gray-600 whitespace-nowrap;
+}
+
+.number-grid {
+  @apply grid grid-cols-6 sm:grid-cols-8 md:grid-cols-9 gap-2;
+}
+
+.number-btn {
+  @apply w-10 h-10 border-2 border-gray-300 rounded-lg bg-white hover:border-blue-500 transition-all duration-200 font-medium;
+}
+
+.number-btn.selected {
+  @apply bg-blue-500 text-white border-blue-500 transform scale-105;
+}
+
+.number-btn.disabled {
+  @apply bg-gray-100 text-gray-400 cursor-not-allowed hover:border-gray-300;
+}
+
+.bet-controllers {
+  @apply space-y-3;
+}
+
+.controller-row {
+  @apply flex gap-2 flex-wrap;
+}
+
+.controller-btn {
+  @apply px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed;
+}
+
+.cancel-btn.active {
+  @apply bg-red-500 hover:bg-red-600;
+}
+
+.cart-header {
+  @apply flex justify-between items-center mb-4 pb-2 border-b border-gray-200;
+}
+
+.cart-title {
+  @apply font-semibold text-gray-800;
+}
+
+.cart-counter {
+  @apply text-sm text-gray-600;
+}
+
+.cart-content {
+  @apply space-y-3 max-h-96 overflow-y-auto mb-4;
+}
+
+.empty-cart {
+  @apply flex flex-col items-center justify-center py-8 text-gray-500;
+}
+
+.empty-icon {
+  @apply w-12 h-12 mb-2 text-gray-400;
+}
+
+.bet-card {
+  @apply bg-white rounded-lg border border-gray-200 p-3 shadow-sm;
+}
+
+.bet-info {
+  @apply flex items-start justify-between mb-2;
+}
+
+.bet-header {
+  @apply text-xs text-gray-500 space-y-1;
+}
+
+.bet-details {
+  @apply flex-1 mx-3;
+}
+
+.game-name {
+  @apply font-medium text-gray-800;
+}
+
+.bet-type-info {
+  @apply flex items-center gap-2 text-sm text-gray-600;
+}
+
+.bonus-badge {
+  @apply inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full mt-1;
+}
+
+.bet-amount {
+  @apply text-right;
+}
+
+.amount {
+  @apply font-semibold text-gray-800;
+}
+
+.payout {
+  @apply text-xs text-green-600;
+}
+
+.delete-btn {
+  @apply p-1 text-red-500 hover:bg-red-50 rounded transition-colors;
+}
+
+.selected-numbers {
+  @apply text-xs text-gray-600 pt-2 border-t border-gray-100;
+}
+
+.cart-controls {
+  @apply flex gap-2;
+}
+
+.clear-btn {
+  @apply flex-1 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors;
+}
+
+.submit-btn {
+  @apply flex-1 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors;
+}
+
+/* Popup Styles */
+.discount-popup-overlay,
+.price-popup-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4;
+}
+
+.discount-popup {
+  @apply bg-white rounded-xl p-6 max-w-md w-full text-center shadow-2xl;
+}
+
+.discount-popup h3 {
+  @apply text-xl font-bold text-gray-800 mb-2;
+}
+
+.discount-popup p {
+  @apply text-gray-600 mb-6;
+}
+
+.popup-buttons {
+  @apply flex gap-3 flex-col sm:flex-row;
+}
+
+.bonus-btn {
+  @apply px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors;
+}
+
+.price-popup {
+  @apply bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col lg:flex-row;
+}
+
+.popup-left {
+  @apply p-6 bg-gray-50 lg:w-64;
+}
+
+.popup-title {
+  @apply font-semibold text-gray-800 mb-3;
+}
+
+.popup-numbers {
+  @apply flex flex-wrap gap-2;
+}
+
+.popup-number {
+  @apply w-8 h-8 bg-blue-500 text-white rounded flex items-center justify-center text-sm font-medium;
+}
+
+.popup-right {
+  @apply p-6 flex-1;
+}
+
+.bet-meta {
+  @apply mb-4;
+}
+
+.bet-meta-header {
+  @apply flex justify-between items-center mb-2;
+}
+
+.ticket-id {
+  @apply text-sm text-gray-500;
+}
+
+.game-type {
+  @apply text-sm text-gray-600;
+}
+
+.discount-notice {
+  @apply bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm;
+}
+
+.price-selection {
+  @apply flex items-center justify-center gap-4 mb-4;
+}
+
+.price-display {
+  @apply text-xl font-bold text-gray-800 min-w-20 text-center;
+}
+
+.discount-amount {
+  @apply text-sm text-green-600 ml-2;
+}
+
+.free-play-badge {
+  @apply bg-yellow-400 text-black px-4 py-2 rounded-lg font-bold border-2 border-black;
+}
+
+.number-pad {
+  @apply grid grid-cols-3 gap-2 mb-6;
+}
+
+.pad-btn {
+  @apply p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors font-medium;
+}
+
+.cancel-btn {
+  @apply px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors;
+}
+
+/* Animation Components */
+.popup-blast {
+  @apply fixed inset-0 flex items-center justify-center z-50 pointer-events-none;
+}
+
+.blast-content {
+  @apply bg-white rounded-xl shadow-2xl p-8 text-center animate-pulse;
+}
+
+.blast-emoji {
+  @apply text-4xl mb-2;
+}
+
+.blast-text {
+  @apply text-xl font-bold text-green-600 mb-1;
+}
+
+.blast-subtext {
+  @apply text-gray-600;
+}
+
+.live-time {
+  @apply text-sm text-gray-600 font-mono;
+}
+
+@media (max-width: 640px) {
+  .number-grid {
+    @apply grid-cols-5;
+  }
+
+  .controller-row {
+    @apply flex-col;
+  }
+
+  .controller-btn {
+    @apply w-full;
+  }
+
+  .game-content {
+    @apply flex-col;
+  }
+
+  .game-right {
+    @apply w-full;
+  }
+}
