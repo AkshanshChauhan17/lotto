@@ -116,7 +116,7 @@ export default function BigFive({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
     };
 
     const handleBetTypeClick = (game_name, bet_type) => {
-        if (bets.length >= 10) {
+        if (bets.length >= 100) {
             toast.error("Cart is full. You can only have 10 bets.");
             return;
         }
@@ -560,7 +560,7 @@ export default function BigFive({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
             <div className="right">
                 <div className="head">
                     <div className="left-text">Selected bets</div>
-                    <div className="right-text">{bets.length}/10</div>
+                    <div className="right-text">{bets.length}/100</div>
                 </div>
                 <div className="selected-cart step-4">
                     {
