@@ -29,6 +29,115 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         JACKPOT: { min: 5, max: 5 }
     };
 
+    // Discount rules mapping
+    const discountRules = {
+        C1: 0.10,     // 10%
+        C2: 0.10,
+        C3: 0.10,     // 10%
+        BONUS: 0.10,
+        C4: 0.10,
+        "C2+C3": 0.15 // 15%
+    };
+
+    const payoutRulesByGame = {
+        "Big Dice": {
+            C1: 5, C2: 35, C3: 30, C4: 640, BONUS: 33, JACKPOT: 30000
+        },
+        "Big Six": {
+            C1: 7, C2: 50, C3: 550, C4: 640, BONUS: 33, JACKPOT: 30000
+        },
+        "Big Max": {
+            C1: 7, C2: 35, C3: 200, C4: 640, BONUS: 33, JACKPOT: 30000
+        },
+        "Big Five": {
+            C1: 7, C2: 70, C3: 800, C4: 640, BONUS: 33, JACKPOT: 30000
+        }
+    };
+
+    // Calculate discount for individual bet
+    const calculateDiscount = (amount, betType) => {
+        const discountRate = discountRules[betType] || 0;
+        const betAmount = Number(amount) || 0;
+
+        if (discountRate > 0 && betAmount >= 5) {
+            return parseFloat((betAmount * discountRate).toFixed(2));
+        }
+        return 0;
+    };
+
+    // Get total available discount
+    const getTotalAvailableDiscount = () => {
+        const gameBets = bets.filter(bet => bet.game_name === "Big Dice" && !bet.bonus);
+
+        let totalDiscount = 0;
+        gameBets.forEach(bet => {
+            totalDiscount += bet.discountAmount || 0;
+        });
+
+        return parseFloat(totalDiscount.toFixed(2));
+    };
+
+    // Get total used discount (bonus bets)
+    const getTotalUsedDiscount = () => {
+        const bonusBets = bets.filter(bet => bet.game_name === "Big Dice" && bet.bonus);
+
+        let totalUsed = 0;
+        bonusBets.forEach(bet => {
+            totalUsed += Number(bet.amount) || 0;
+        });
+
+        return parseFloat(totalUsed.toFixed(2));
+    };
+
+    // Get remaining discount
+    const getRemainingDiscount = () => {
+        const available = getTotalAvailableDiscount();
+        const used = getTotalUsedDiscount();
+        return Math.max(0, parseFloat((available - used).toFixed(2)));
+    };
+
+    // Update discount amounts proportionally
+    const updateDiscountAmounts = (bonusAmount, isRemoving = false) => {
+        setBets(prevBets =>
+            prevBets.map(bet => {
+                if (bet.game_name === "Big Dice" && !bet.bonus) {
+                    // Always ensure we have original discount saved
+                    const original = bet.originalDiscountAmount ?? bet.discountAmount;
+
+                    if (isRemoving) {
+                        // Restore to original
+                        return {
+                            ...bet,
+                            discountAmount: parseFloat(original.toFixed(2)),
+                            originalDiscountAmount: original
+                        };
+                    } else if (bet.discountAmount > 0) {
+                        // Apply proportional reduction
+                        const totalAvailable = prevBets
+                            .filter(b => b.game_name === "Big Dice" && !b.bonus)
+                            .reduce((sum, b) => sum + (b.discountAmount || 0), 0);
+
+                        if (totalAvailable <= 0) return bet;
+
+                        const proportion = bet.discountAmount / totalAvailable;
+                        const reduction = bonusAmount * proportion;
+                        const newDiscountAmount = Math.max(
+                            0,
+                            bet.discountAmount - reduction
+                        );
+
+                        return {
+                            ...bet,
+                            discountAmount: parseFloat(newDiscountAmount.toFixed(2)),
+                            originalDiscountAmount: original
+                        };
+                    }
+                }
+                return bet;
+            })
+        );
+    };
+
     const autoSelect = (count) => {
         const allNums = range(
             game_matrix[0].lotto_dice.clickable_numbers[0],
@@ -58,16 +167,20 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
             }
         }
 
-        // ✅ Directly add JACKPOT bet (no second click needed)
+        // Directly add JACKPOT bet
         if (bet_type === "JACKPOT") {
+            const amount = 2; // fixed $2
+            const discountAmount = calculateDiscount(amount, bet_type);
+
             const newBet = {
                 date: new Date().toLocaleString("en-GB"),
                 ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
                 game_name,
                 bet_type,
                 numbers: [...selectedNumbers],
-                amount: 2,       // fixed $2
+                amount,
                 bonus: false,
+                discountAmount,
             };
 
             setBets(prev => [...prev, newBet]);
@@ -87,20 +200,17 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         const { game_name, bet_type } = tempBetData;
         const lineCount = calculateLines(selectedNumbers, bet_type);
 
-        // ✅ Validation: Must have at least 1 valid line
         if (lineCount <= 0) {
             toast.error(`Not enough numbers selected for ${bet_type}`);
             return;
         }
 
-        // ✅ Minimum price validation
         const minPrice = lineCount >= 3 ? makeEven(Math.ceil(lineCount * 0.5)) : 1;
         if (price < minPrice) {
             toast.error(`Minimum price for ${lineCount} lines is $${minPrice}`);
             return;
         }
 
-        // ✅ Handle C2+C3 combined logic
         if (bet_type === "C2+C3") {
             const c2Lines = calculateLines(selectedNumbers, "C2");
             const c3Lines = calculateLines(selectedNumbers, "C3");
@@ -109,16 +219,12 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
             if (c2Lines > 0) addBet(game_name, "C2", selectedNumbers, halfPrice);
             if (c3Lines > 0) addBet(game_name, "C3", selectedNumbers, halfPrice);
         }
-
-        // ✅ Handle BONUS: split into individual bets
         else if (bet_type === "BONUS") {
             const perLinePrice = price / selectedNumbers.length;
             selectedNumbers.forEach((num) =>
                 addBet(game_name, "BONUS", [num], perLinePrice)
             );
         }
-
-        // ✅ Handle normal bet types (C1, C2, C3, C4)
         else {
             addBet(game_name, bet_type, selectedNumbers, price);
         }
@@ -127,6 +233,8 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
     };
 
     function addBet(game_name, bet_type, numbers, amount) {
+        const discountAmount = calculateDiscount(amount, bet_type);
+
         setBets((prev) => [
             ...prev,
             {
@@ -137,9 +245,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                 numbers: [...numbers],
                 amount,
                 bonus: false,
-                addToWinningAmount,
-                freePlay,
-                discount,
+                discountAmount,
             },
         ]);
     }
@@ -155,7 +261,6 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         setPrice(0);
     }
 
-    // Cancel bet creation
     const cancelBet = () => {
         setTempBetData(null);
         setPrice(1);
@@ -163,8 +268,9 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         setSelectedNumbers([]);
     };
 
-    const removeBet = (index) => {
+    const removeBet = (index, bet = {}) => {
         setBets(prev => prev.filter((_, i) => i !== index));
+        updateDiscountAmounts(bet.discount, true);
     };
 
     const handleSelect = (num) => {
@@ -225,32 +331,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
             default:
                 return 0;
         }
-    };
-
-    // discount rules mapping [this is dummy we just make it call from api]
-    const discountRules = {
-        C1: 0.10,     // 10%
-        C2: 0.10,
-        C3: 0.20,     // 20%
-        BONUS: 0.10,
-        C4: 0.10,
-        "C2+C3": 0.15 // 15%
-    };
-
-    const payoutRulesByGame = {
-        "Big Dice": {
-            C1: 5, C2: 35, C3: 33, C4: 640, BONUS: 33, JACKPOT: 30000
-        },
-        "Big Six": {
-            C1: 7, C2: 50, C3: 550, C4: 640, BONUS: 33, JACKPOT: 30000
-        },
-        "Big Max": {
-            C1: 7, C2: 35, C3: 200, C4: 640, BONUS: 33, JACKPOT: 30000
-        },
-        "Big Five": {
-            C1: 7, C2: 70, C3: 800, C4: 640, BONUS: 33, JACKPOT: 30000
-        }
-    };
+    }
 
     function calculateWinnings(bet) {
         const gameRules = payoutRulesByGame[bet.game_name] || {};
@@ -263,31 +344,28 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
     const [addToWinningAmount, setAddToWinningAmount] = useState(false);
     const [freePlay, setAddFreePlay] = useState(false);
     const [discount, setDiscount] = useState(0);
-
     const [priceBow, setPriceBow] = useState(0);
 
     const updatePriceBow = () => {
-        if (discount > priceBow) {
-            const newPrice = discount - priceBow;
-            setDiscount(newPrice);
-            tDesDef(newPrice);
-        } else {
-            const newPriceRev = priceBow - discount;
-            setDiscount(newPriceRev);
-            tDesDef(newPriceRev);
-        };
+        const remainingDiscount = getRemainingDiscount();
+        if (priceBow <= remainingDiscount) {
+            updateDiscountAmounts(priceBow);
+        }
     };
 
     const confirmBetBon = () => {
         if (!tempBetData) return;
 
         const { game_name, bet_type } = tempBetData;
+        const remainingDiscount = getRemainingDiscount();
 
-        // ✅ If BONUS type, add one bet per number (no validation)
+        if (priceBow > remainingDiscount) {
+            toast.error(`Not enough discount available. Available: $${remainingDiscount}`);
+            return;
+        }
+
         if (bet_type === "BONUS") {
-            const perLinePrice = price > 0
-                ? price / selectedNumbers.length
-                : discount / selectedNumbers.length; // fallback to discount if price is 0
+            const perLinePrice = priceBow / selectedNumbers.length;
 
             const newBets = selectedNumbers.map((num) => ({
                 date: new Date().toLocaleString("en-GB"),
@@ -296,16 +374,13 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                 bet_type,
                 numbers: [num],
                 amount: perLinePrice,
-                bonus: true,  // ✅ mark as bonus
-                addToWinningAmount,
-                freePlay,
-                discount,
+                bonus: true,
+                discountAmount: 0,
             }));
 
             setBets((prev) => [...prev, ...newBets]);
         }
         else {
-            // ✅ For other bet types, just add as single bonus bet
             const newBet = {
                 date: new Date().toLocaleString("en-GB"),
                 ticket_id: `#TKT${Math.floor(100000 + Math.random() * 900000)}`,
@@ -314,20 +389,19 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                 numbers: [...selectedNumbers],
                 amount: priceBow,
                 bonus: true,
-                addToWinningAmount,
-                freePlay,
-                discount,
+                discountAmount: 0,
             };
 
             setBets((prev) => [...prev, newBet]);
         }
 
-        // ✅ Reset states after adding bet
+        // Update discount amounts proportionally
+        updatePriceBow();
+
         setShowPricePopup(false);
         setTempBetData(null);
         setSelectedNumbers([]);
         setPrice(0);
-        updatePriceBow();
         setPriceBow(0);
     };
 
@@ -335,38 +409,12 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
         hS(openPop);
     };
 
-    function calculateTotalDiscount(bets) {
-        if (!Array.isArray(bets)) return "0.00";
-
-        // only bets of the requested game
-        const gameBets = bets.filter(bet => bet.game_name == "Big Dice");
-
-        let total = 0;
-        total = gameBets.reduce((sum, bet) => {
-            if (!bet.bonus) {
-                const discountRate = discountRules[bet.bet_type] || 0;
-                const amount = Number(bet.amount) || 0;
-                if (discountRate > 0 && amount >= 5) {
-                    sum += amount * discountRate;
-                }
-            } else {
-                const amountBo = Number(bet.amount) || 0;
-                sum -= amountBo;
-            }
-            return sum; // always return accumulator
-        }, 0);
-
-        const finalTotal = parseFloat(total.toFixed(2));
-        tDesDef((finalTotal - priceBow).toFixed(1));
-        setDiscount((finalTotal - priceBow).toFixed(1));
-
-        return finalTotal;
-    };
-
     const onSubmit = () => {
-        const discount = calculateTotalDiscount(bets);
-        if (discount > 0) {
-            setShowDiscountPopup(true); // show popup
+        const remainingDiscount = getRemainingDiscount();
+        if (remainingDiscount > 0) {
+            setDiscount(remainingDiscount);
+            tDesDef(remainingDiscount.toFixed(2));
+            setShowDiscountPopup(true);
         } else {
             setShowDiscountPopup(false);
             handleSubmit();
@@ -374,7 +422,9 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
     };
 
     useEffect(() => {
-        calculateTotalDiscount(bets);
+        const remainingDiscount = getRemainingDiscount();
+        setDiscount(remainingDiscount);
+        tDesDef(remainingDiscount.toFixed(2));
     }, [bets]);
 
     useEffect(() => {
@@ -390,7 +440,7 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
             setAddFreePlay(true);
             setAddToWinningAmount(false);
         });
-    };
+    }
 
     return (
         <div className="game-inner">
@@ -505,7 +555,6 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                 </div>
             </div>
 
-            {/* ✅ Cart View */}
             <div className="right">
                 <div className="head">
                     <div className="left-text">Selected bets</div>
@@ -528,13 +577,18 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                                         <div className="b-left">{e.bet_type}</div>
                                         <div className="b-right">/L {calculateLines(e.numbers, e.bet_type)}</div>
                                     </div>
-                                    <div>{e.bonus ? <div style={{ padding: "0px 10px", borderRadius: "10px", outline: "1px solid blue", backgroundColor: "lightblue", fontWeight: 500, fontSize: 12, textAlign: "center", marginTop: "5px" }}>Bonus</div> : null}</div>
+                                    {e.bonus && <div style={{ padding: "0px 10px", borderRadius: "10px", outline: "1px solid blue", backgroundColor: "lightblue", fontWeight: 500, fontSize: 12, textAlign: "center", marginTop: "5px" }}>Bonus</div>}
+                                    {!e.bonus && e.discountAmount > 0 && (
+                                        <div style={{ padding: "0px 10px", borderRadius: "10px", outline: "1px solid green", backgroundColor: "lightgreen", fontWeight: 500, fontSize: 10, textAlign: "center", marginTop: "5px" }}>
+                                            Discount: ${e.discountAmount}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="bet-right">
                                     <div className="left">${e.amount}</div>
                                     <div className="right">/${(calculateWinnings(e)).toFixed(2)}</div>
                                 </div>
-                                <button className="delete" onClick={() => { bets.filter(bet => bet.bonus === true) && !e.bonus ? toast.warning("Please remove all bonus bets first.") : removeBet(i); }}>
+                                <button className="delete" onClick={() => { bets.some(bet => bet.bonus === true) && !e.bonus ? toast.warning("Please remove all bonus bets first.") : removeBet(i, e); }}>
                                     <AiFillDelete className="delete-icon" />
                                 </button>
                             </div>
@@ -578,10 +632,10 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                                 <div className="bet-meta-type">Lotto Dice</div>
                             </div>
                             <h3>Select Price</h3>
-                            {price >= 5 && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
+                            {price >= 5 && tempBetData && <div className="discount"><b>Hay!</b> you got <b>{(discountRules[tempBetData.bet_type] * 100).toFixed(2)}% DISCOUNT</b></div>}
                             {(!freePlay || discount <= 0) ? <div className="bet-price-selection">
                                 <button onClick={() => price > 1 && setPrice(price - 1)}>${price - 1}</button>
-                                <div className="input">${price} {price >= 5 && <span>${(price * discountRules[tempBetData.bet_type]).toFixed(2)}</span>}</div>
+                                <div className="input">${price} {price >= 5 && tempBetData && <span>${calculateDiscount(price, tempBetData.bet_type)}</span>}</div>
                                 <button onClick={() => price < cdd.balance && setPrice(price + 1)}>${price + 1}</button>
                             </div> : <div className="bet-price-selection">
                                 <div style={{
@@ -593,15 +647,13 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
                                     outline: "2px solid black"
                                 }}>FREE PLAY</div>
 
-                                {/* 👇 Keep the math clean */}
                                 <button onClick={() => priceBow >= 0.1 && setPriceBow(prev => parseFloat((prev - 0.1).toFixed(1)))}>
                                     ${parseFloat(priceBow - 0.1).toFixed(1)}
                                 </button>
 
-                                {/* 👇 Only format for display */}
                                 <div className="input">${priceBow.toFixed(1)}</div>
 
-                                <button onClick={() => priceBow <= discount - 0.1 && setPriceBow(prev => parseFloat((prev + 0.1).toFixed(1)))}>
+                                <button onClick={() => priceBow < discount && setPriceBow(prev => parseFloat((prev + 0.1).toFixed(1)))}>
                                     ${parseFloat(priceBow + 0.1).toFixed(1)}
                                 </button>
                             </div>
@@ -622,8 +674,8 @@ export default function BigDice({ bets, setBets, cdd, hS, tDes, tDesDef, destroy
 
                             <div className="popup-buttons">
                                 {(!freePlay || discount <= 0) && <button className="submit" onClick={confirmBet}>Submit</button>}
-                                <button className="cancel" onClick={cancelBet}>{(freePlay && tempBetData.bet_type === "C2+C3" && discount > 0) ? "Discount is not applicable for this bet" : "Cancel"}</button>
-                                {(freePlay && tempBetData.bet_type != "C2+C3" && discount > 0) && <button className="bonus step-3" onClick={confirmBetBon}>Bonus {priceBow}</button>}
+                                <button className="cancel" onClick={cancelBet}>{(freePlay && tempBetData && tempBetData.bet_type === "C2+C3" && discount > 0) ? "Discount is not applicable for this bet" : "Cancel"}</button>
+                                {(freePlay && tempBetData && tempBetData.bet_type !== "C2+C3" && discount > 0) && <button className="bonus step-3" onClick={confirmBetBon}>Bonus {priceBow}</button>}
                             </div>
                         </div>
                     </div>
